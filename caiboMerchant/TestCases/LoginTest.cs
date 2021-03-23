@@ -83,7 +83,7 @@ namespace caiboMerchant.TestCases
 
         [Test]
 
-        public void ResetPass()
+        public void ResetPasss()
         {
             var loginPage = new LoginPage(_driver);            
             loginPage.ResetPass();
@@ -137,7 +137,7 @@ namespace caiboMerchant.TestCases
         [TearDown]
         public void EndTest()
         {
-           // _driver.Quit();
+            _driver.Quit();
         }
     }
 }
