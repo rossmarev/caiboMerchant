@@ -4,7 +4,7 @@ using System.Reflection;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using caiboMerchant.PageObjects;
+using caiboMerchant.PageObjects.CreateActivate;
 using OpenQA.Selenium.Interactions;
 using System;
 using SeleniumExtras.WaitHelpers;

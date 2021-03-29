@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace caiboMerchant.PageObjects
+namespace caiboMerchant.PageObjects.Login
 {
   public  class LoginPage
     {
@@ -26,7 +26,7 @@ namespace caiboMerchant.PageObjects
         IWebElement SignUpLink;
         [FindsBy(How = How.XPath, Using = ("/html/body/div/div/main/div/form/div/div[2]/label/a"))]
         [CacheLookup]
-        IWebElement ForgotPass;
+        IWebElement ForgotPassLink;
 
 
         public void SignUp()
@@ -41,9 +41,9 @@ namespace caiboMerchant.PageObjects
             ContinueButton.Click();
         }
         
-        public void ResetPass()
+        public void ResetPassLink()
         {
-            ForgotPass.Click();
+            ForgotPassLink.Click();
         }
 
 

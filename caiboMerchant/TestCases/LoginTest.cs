@@ -7,7 +7,7 @@ using NUnit.Framework;
 using OpenQA.Selenium.Chrome;
 using System.IO;
 using System.Reflection;
-using caiboMerchant.PageObjects;
+using caiboMerchant.PageObjects.Login;
 using System.Linq;
 
 
@@ -26,7 +26,6 @@ namespace caiboMerchant.TestCases
             //_wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
             _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(20);
             _driver.Navigate().GoToUrl("https://caibo-merchant-staging.sepa-cyber.com/en");
-            var loginPage = new LoginPage(_driver);
 
         }
 
@@ -86,12 +85,11 @@ namespace caiboMerchant.TestCases
         public void ResetPasss()
         {
             var loginPage = new LoginPage(_driver);            
-            loginPage.ResetPass();
+            loginPage.ResetPassLink();
 
-            var email = _driver.FindElement(By.Name("login_email"));
-            email.SendKeys("june@putsbox.com");
-            var continueButton = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/footer/button"));
-            continueButton.Click();
+
+            var resetPassPage = new ResetPass(_driver);
+            resetPassPage.EnterMail("june@putsbox.com");
 
             _driver.Navigate().GoToUrl("https://putsbox.com/");
 
@@ -99,6 +97,7 @@ namespace caiboMerchant.TestCases
             signIn.Click();
             var emailPutsbox = _driver.FindElement(By.Id("user_email"));
             emailPutsbox.SendKeys("r.marev.workphone@gmail.com");
+
             var pass = _driver.FindElement(By.Id("user_password"));
             pass.SendKeys("Sepacyber1");
             var signinButton = _driver.FindElement(By.Name("commit"));
@@ -129,7 +128,17 @@ namespace caiboMerchant.TestCases
 
            
         }
+        [Test]
+        public void ResetPassWrongMail()
+        {
+            var loginPage = new LoginPage(_driver);
+            loginPage.ResetPassLink();
 
+            var resetPassPage = new ResetPass(_driver);
+            resetPassPage.EnterMail("asd@abv.bg");
+            string actualError = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/div[2]/p")).Text;
+            Assert.AreEqual("account not found, please check email-address", actualError);
+        }
 
 
         
@@ -137,7 +146,7 @@ namespace caiboMerchant.TestCases
         [TearDown]
         public void EndTest()
         {
-            _driver.Quit();
+           // _driver.Quit();
         }
     }
 }

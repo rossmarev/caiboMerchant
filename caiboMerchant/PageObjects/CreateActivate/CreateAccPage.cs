@@ -5,7 +5,7 @@ using SeleniumExtras.PageObjects;
 
 
 
-namespace caiboMerchant.PageObjects
+namespace caiboMerchant.PageObjects.CreateActivate
 {
    
    public class CreateAccPage

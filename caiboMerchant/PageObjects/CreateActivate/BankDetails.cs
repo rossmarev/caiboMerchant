@@ -4,7 +4,7 @@ using System.Text;
 using OpenQA.Selenium;
 using SeleniumExtras.PageObjects;
 
-namespace caiboMerchant.PageObjects
+namespace caiboMerchant.PageObjects.CreateActivate
 {
     public class BankDetails
     { 
