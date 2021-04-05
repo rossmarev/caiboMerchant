@@ -20,10 +20,22 @@ namespace caiboMerchant.PageObjects.Login
         [CacheLookup]
         IWebElement ContinueButton;
 
+        [FindsBy(How = How.LinkText, Using = ("resend"))]
+        [CacheLookup]
+        IWebElement ResendButton;
+
+
+
         public void EnterMail(string mail)
         {
             Email.SendKeys(mail);
             ContinueButton.Click();
+        }
+
+        public void ResendMail(string mail)
+        {
+           
+           ResendButton.Click();
         }
     }
 }

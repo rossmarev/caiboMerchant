@@ -45,6 +45,14 @@ namespace caiboMerchant.PageObjects.CreateActivate
            var testMail = GetNewMail.GetAttribute("value");
            return testMail;
         }
+
+        public void PutsboxSignIn()
+        {
+            SignIn.Click();
+            EmailPutsbox.SendKeys("r.marev.workphone@gmail.com");
+            Pass.SendKeys("Sepacyber1");
+            SignInButton.Click();
+        }
         
     }
 }

@@ -8,7 +8,9 @@ using OpenQA.Selenium.Chrome;
 using System.IO;
 using System.Reflection;
 using caiboMerchant.PageObjects.Login;
+using caiboMerchant.PageObjects.CreateActivate;
 using System.Linq;
+
 
 
 namespace caiboMerchant.TestCases
@@ -89,21 +91,16 @@ namespace caiboMerchant.TestCases
 
 
             var resetPassPage = new ResetPass(_driver);
-            resetPassPage.EnterMail("june@putsbox.com");
+            resetPassPage.EnterMail("micheal@putsbox.com");
 
             _driver.Navigate().GoToUrl("https://putsbox.com/");
+            var putsboxSignIn = new GenerateTestMail(_driver);
+            putsboxSignIn.PutsboxSignIn();
 
-            var signIn = _driver.FindElement(By.PartialLinkText("Sign in"));
-            signIn.Click();
-            var emailPutsbox = _driver.FindElement(By.Id("user_email"));
-            emailPutsbox.SendKeys("r.marev.workphone@gmail.com");
 
-            var pass = _driver.FindElement(By.Id("user_password"));
-            pass.SendKeys("Sepacyber1");
-            var signinButton = _driver.FindElement(By.Name("commit"));
-            signinButton.Click();
+          
 
-            var testMail = _driver.FindElement(By.PartialLinkText("june"));  
+            var testMail = _driver.FindElement(By.PartialLinkText("micheal"));  
             testMail.Click();
 
             IWebElement htmlMail = _driver.FindElement(By.PartialLinkText("HTML"));
@@ -126,7 +123,15 @@ namespace caiboMerchant.TestCases
             string successMessage = _driver.FindElement(By.XPath("//*[@id='form-message_resetpw']/p")).Text;
             Assert.AreEqual("You have successfully changed your password.", successMessage);
 
-           
+            //clear inbox history
+            string inboxTab = _driver.WindowHandles.First();
+            _driver.SwitchTo().Window(inboxTab);
+            IWebElement clearHistory = _driver.FindElement(By.LinkText("Clear History"));
+            clearHistory.Click();
+            IAlert confirmAlert = _driver.SwitchTo().Alert();
+            confirmAlert.Accept();
+
+
         }
         [Test]
         public void ResetPassWrongMail()
@@ -140,8 +145,33 @@ namespace caiboMerchant.TestCases
             Assert.AreEqual("account not found, please check email-address", actualError);
         }
 
+        [Test]
 
-        
+        public void ResendButton()
+        {
+            var loginPage = new LoginPage(_driver);
+            loginPage.ResetPassLink();
+
+            var resetPassPage = new ResetPass(_driver);
+            resetPassPage.EnterMail("micheal@putsbox.com");
+
+
+            //_driver.FindElement(By.CssSelector("body")).SendKeys(Keys.Control + "t");
+
+
+            _driver.Navigate().GoToUrl("https://putsbox.com/");
+
+            var putsboxSignIn = new GenerateTestMail(_driver);
+            putsboxSignIn.PutsboxSignIn();
+
+            var testMail = _driver.FindElement(By.PartialLinkText("micheal"));
+            testMail.Click();
+            var resetMail = _driver.FindElement(By.XPath("/html/body/div/div[1]/div/table/tbody/tr[1]/td[2]")).Displayed;
+            Assert.IsTrue(resetMail);
+
+
+        }
+
 
         [TearDown]
         public void EndTest()
