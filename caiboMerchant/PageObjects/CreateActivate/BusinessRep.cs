@@ -41,6 +41,12 @@ namespace caiboMerchant.PageObjects.CreateActivate
         [FindsBy(How = How.Name, Using = ("ceo[email]"))]
         [CacheLookup]
         IWebElement CeoMail;
+        [FindsBy(How = How.XPath, Using = ("//*[@id='ui-id-2-button']/span[1]"))]
+        [CacheLookup]
+        IWebElement CeoCountryCodeDropdown;
+        [FindsBy(How = How.XPath, Using = ("//*[@id='ui-id-347']"))] 
+        [CacheLookup]
+        IWebElement CeoCountryCode;
         [FindsBy(How = How.Name, Using = ("ceo[mobile_number]"))]
         [CacheLookup]
         IWebElement CeoMobile;
@@ -63,7 +69,7 @@ namespace caiboMerchant.PageObjects.CreateActivate
         [FindsBy(How = How.XPath, Using = ("//*[@id='ui-id-3-button']/span[2]"))]
         [CacheLookup]
         IWebElement SignatoryCountryDropdown;
-        [FindsBy(How = How.XPath, Using = ("//*[@id='ui-id-303']"))]
+        [FindsBy(How = How.XPath, Using = ("//*[@id='ui-id-507']"))] 
         [CacheLookup]
         IWebElement SignatoryCountry;
         [FindsBy(How = How.Name, Using = ("signatory[street]"))]
@@ -75,6 +81,14 @@ namespace caiboMerchant.PageObjects.CreateActivate
         [FindsBy(How = How.Name, Using = ("signatory[email]"))]
         [CacheLookup]
         IWebElement SignatoryMail;
+        [FindsBy(How = How.XPath, Using = ("//*[@id='ui-id-4-button']/span[1]"))]
+        [CacheLookup]
+        IWebElement SignatoryCountryCodeDropdown;
+
+        [FindsBy(How = How.XPath, Using = ("//*[@id='ui-id-793']"))] 
+        [CacheLookup]
+        IWebElement SignatoryCountryCode;
+
         [FindsBy(How = How.Name, Using = ("signatory[mobile_number]"))]
         [CacheLookup]
         IWebElement SignatoryMobile;
@@ -97,7 +111,7 @@ namespace caiboMerchant.PageObjects.CreateActivate
         [FindsBy(How = How.XPath, Using = ("//*[@id='ui-id-3-button']/span[2]"))]
         [CacheLookup]
         IWebElement Shareholder1CountryDropdown;
-        [FindsBy(How = How.XPath, Using = ("//*[@id='ui-id-303']"))]
+        [FindsBy(How = How.XPath, Using = ("//*[@id='ui-id-746']"))]
         [CacheLookup]
         IWebElement Shareholder1Country;
         [FindsBy(How = How.Name, Using = ("shareholder_1[street]"))]
@@ -109,9 +123,16 @@ namespace caiboMerchant.PageObjects.CreateActivate
         [FindsBy(How = How.Name, Using = ("shareholder_1[email]"))]
         [CacheLookup]
         IWebElement Shareholder1Mail;
+        [FindsBy(How = How.XPath, Using = ("//*[@id='ui-id-6-button']/span[1]"))] 
+        [CacheLookup]
+        IWebElement Shareholder1CountryCodeDropdown;
+        [FindsBy(How = How.XPath, Using = ("//*[@id='ui-id-793']"))] 
+        [CacheLookup]
+        IWebElement Shareholder1CountryCode;
         [FindsBy(How = How.Name, Using = ("shareholder_1[mobile_number]"))]
         [CacheLookup]
         IWebElement Shareholder1Mobile;
+
         [FindsBy(How = How.XPath, Using = ("//*[@id='main']/div[1]/form/footer/button"))]
         [CacheLookup]
         IWebElement SaveButton;
@@ -128,30 +149,39 @@ namespace caiboMerchant.PageObjects.CreateActivate
             CeoCity.SendKeys("varna");
             CeoMail.Clear();
             CeoMail.SendKeys("test@abv.bg");
-            CeoMobile.SendKeys("123456789");                      
-            AuthSignatory.Click();           
-            SignatoryFirstName.SendKeys("John");
-            SignatoryLastName.SendKeys("Doe");
-            SignatoryPassportN.SendKeys("123345567789");
-            SignatoryDOB.SendKeys("01011945");
-            SignatoryCountryDropdown.Click();
-            SignatoryCountry.Click();
-            SignatoryStreet.SendKeys("elm st");
-            SignatoryCity.SendKeys("varna");
-            SignatoryMail.SendKeys("test@abv.bg");
-            SignatoryMobile.SendKeys("123456789");
-            Shareholder.Click();
-            Shareholder1FirstName.SendKeys("John");
-           Shareholder1LastName.SendKeys("Doe");
-            Shareholder1PassportN.SendKeys("123345567789");
-            Shareholder1DOB.SendKeys("01011945");
-            Shareholder1CountryDropdown.Click();
-            Shareholder1Country.Click();
-            Shareholder1Street.SendKeys("elm st");
-            Shareholder1City.SendKeys("varna");
-           Shareholder1Mail.SendKeys("test@abv.bg");
-            Shareholder1Mobile.SendKeys("123456789");
-            SaveButton.Click();
+            CeoCountryCodeDropdown.Click();
+            CeoCountryCode.Click();
+            CeoMobile.SendKeys("12345");  
+            
+           // AuthSignatory.Click();           
+          //  SignatoryFirstName.SendKeys("John");
+           // SignatoryLastName.SendKeys("Doe");
+           // SignatoryPassportN.SendKeys("123345567789");
+           // SignatoryDOB.SendKeys("01011945");
+           // SignatoryCountryDropdown.Click();
+           // SignatoryCountry.Click();
+           // SignatoryStreet.SendKeys("elm st");
+            //SignatoryCity.SendKeys("varna");
+            //SignatoryMail.SendKeys("test@abv.bg");
+           // SignatoryCountryCodeDropdown.Click();
+           // SignatoryCountryCode.Click();
+           // SignatoryMobile.SendKeys("123456");
+
+           // Shareholder.Click();
+           // Shareholder1FirstName.SendKeys("John");
+          // Shareholder1LastName.SendKeys("Doe");
+           // Shareholder1PassportN.SendKeys("123345567789");
+           // Shareholder1DOB.SendKeys("01011945");
+           // Shareholder1CountryDropdown.Click();
+           // Shareholder1Country.Click();
+          //  Shareholder1Street.SendKeys("elm st");
+          //  Shareholder1City.SendKeys("varna");
+          // Shareholder1Mail.SendKeys("test@abv.bg");
+          //  Shareholder1CountryCodeDropdown.Click();
+          //  Shareholder1CountryCode.Click();
+          //  Shareholder1Mobile.SendKeys("123456");
+
+           SaveButton.Click();
 
         }
     }

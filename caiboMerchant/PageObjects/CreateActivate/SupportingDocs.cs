@@ -64,7 +64,7 @@ namespace caiboMerchant.PageObjects.CreateActivate
             Owners.SendKeys("C:\\Users\\r.marev\\Downloads\\registeringPSP.pdf");
             Standing.SendKeys("C:\\Users\\r.marev\\Downloads\\registeringPSP.pdf");
             ProcHistory.SendKeys("C:\\Users\\r.marev\\Downloads\\registeringPSP.pdf");
-           // SubmitApplication.Click();
+            SubmitApplication.Click();
              
 }
     }

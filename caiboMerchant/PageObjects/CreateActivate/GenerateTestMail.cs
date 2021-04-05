@@ -10,16 +10,38 @@ namespace caiboMerchant.PageObjects.CreateActivate
         {
             PageFactory.InitElements(driver, this);
         }
-        [FindsBy(How = How.XPath, Using = "/html/body/div/div[1]/div/div/header/form/button")] 
+
+        [FindsBy(How = How.PartialLinkText, Using = "Sign in")]
+        public IWebElement SignIn;
+
+        [FindsBy(How = How.Id, Using = "user_email")]
+        public IWebElement EmailPutsbox;
+
+        [FindsBy(How = How.Id, Using = "user_password")]
+        public IWebElement Pass;
+
+        [FindsBy(How = How.Name, Using = "commit")]
+        public IWebElement SignInButton;
+
+        [FindsBy(How = How.XPath, Using = "/html/body/div/div[2]/div/div/header/form/button")]  
         public IWebElement NewMail;
 
         [FindsBy(How = How.Id, Using = "putsbox-token-input")]
         public  IWebElement GetNewMail;
 
 
+
+      
+
+
+
         public string  CopyMail()
         {
-           NewMail.Click();
+           SignIn.Click();
+           EmailPutsbox.SendKeys("r.marev.workphone@gmail.com");
+            Pass.SendKeys("Sepacyber1");
+            SignInButton.Click();
+            NewMail.Click();
            var testMail = GetNewMail.GetAttribute("value");
            return testMail;
         }

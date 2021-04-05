@@ -36,7 +36,7 @@ namespace caiboMerchant.TestCases
 
 
         [Test]
-        public void CreateTest()
+        public void CreateAcc()
         {
             _driver.Navigate().GoToUrl("https://putsbox.com/");
             var generateTestMail = new GenerateTestMail(_driver);
@@ -66,23 +66,6 @@ namespace caiboMerchant.TestCases
             IWebElement startNow = _wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//*[@id='main']/div/div/button")));
             startNow.Click();
 
-
-        }
-
-        [Test]
-        public void Login()
-        {
-            _driver.Navigate().GoToUrl("https://caibo-merchant-staging.sepa-cyber.com/en");
-
-            var email = _driver.FindElement(By.Id("email"));
-            email.SendKeys("israel_mayert@putsbox.com");
-            var pass = _driver.FindElement(By.Id("password"));
-            pass.SendKeys("Sepacyber1!");
-            var loginButton = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/footer/button"));
-            loginButton.Click();
-            IWebElement startNow = _wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//*[@id='main']/div/div/button")));
-            startNow.Click();
-
             var businessDetails = new BusinessDetails(_driver);
             businessDetails.EnterBizDetails();
 
@@ -102,6 +85,48 @@ namespace caiboMerchant.TestCases
 
             var supportDocs = new SupportingDocs(_driver);
             supportDocs.AttachDocs();
+
+            var actualStatus = _driver.FindElement(By.XPath("//*[@id='main']/div/div/h4")).Text;
+            Assert.AreEqual("Application status: Pending", actualStatus);
+
+        }
+
+        [Test]
+        public void Activate()  //not to be used - it is 2nd part of create account - activate
+        {
+            _driver.Navigate().GoToUrl("https://caibo-merchant-staging.sepa-cyber.com/en");
+
+            var email = _driver.FindElement(By.Id("email"));
+            email.SendKeys("micheal@putsbox.com");
+            var pass = _driver.FindElement(By.Id("password"));
+            pass.SendKeys("Sepacyber1!");
+            var loginButton = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/footer/button"));
+            loginButton.Click();
+            IWebElement startNow = _wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//*[@id='main']/div/div/button")));
+            startNow.Click();
+
+            var businessDetails = new BusinessDetails(_driver);
+            businessDetails.EnterBizDetails();
+
+
+            var businessRep = new BusinessRep(_driver);
+            businessRep.EnterBizRep();
+
+
+            var bankDet = new BankDetails(_driver);
+            bankDet.EnterBankDet();
+
+           var processInfo = new ProcessingInfo(_driver);
+            processInfo.EnterProcessingInfo();
+
+            var riskManage = new RiskManagement(_driver);
+            riskManage.EnterRiskManagement();
+
+            var supportDocs = new SupportingDocs(_driver);
+            supportDocs.AttachDocs();
+
+            var actualStatus = _driver.FindElement(By.XPath("//*[@id='main']/div/div/h4")).Text;
+            Assert.AreEqual("Application status: Pending", actualStatus);
         }
 
 

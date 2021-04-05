@@ -41,7 +41,7 @@ namespace caiboMerchant.PageObjects.CreateActivate
             Currency.Click();
             Iban.Click();
             IbanN.SendKeys("1234123123");
-            Bic.SendKeys("312222");
+            Bic.SendKeys("BIC");
             SaveButton.Click();
 
         }
