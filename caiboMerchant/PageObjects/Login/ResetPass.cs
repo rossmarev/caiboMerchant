@@ -6,9 +6,9 @@ using System.Text;
 
 namespace caiboMerchant.PageObjects.Login
 {
-    public class ResetPass
+    public class ResendMail
     {
-        public ResetPass(IWebDriver driver)
+        public ResendMail(IWebDriver driver)
         {
             PageFactory.InitElements(driver, this);
         }
@@ -32,7 +32,7 @@ namespace caiboMerchant.PageObjects.Login
             ContinueButton.Click();
         }
 
-        public void ResendMail(string mail)
+        public void ResendMailButton()
         {
            
            ResendButton.Click();

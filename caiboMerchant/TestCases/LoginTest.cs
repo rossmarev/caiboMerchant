@@ -10,8 +10,8 @@ using System.Reflection;
 using caiboMerchant.PageObjects.Login;
 using caiboMerchant.PageObjects.CreateActivate;
 using System.Linq;
-
-
+using OpenQA.Selenium.Interactions;
+using System.Threading;
 
 namespace caiboMerchant.TestCases
 {
@@ -90,7 +90,7 @@ namespace caiboMerchant.TestCases
             loginPage.ResetPassLink();
 
 
-            var resetPassPage = new ResetPass(_driver);
+            var resetPassPage = new ResendMail(_driver);
             resetPassPage.EnterMail("micheal@putsbox.com");
 
             _driver.Navigate().GoToUrl("https://putsbox.com/");
@@ -139,7 +139,7 @@ namespace caiboMerchant.TestCases
             var loginPage = new LoginPage(_driver);
             loginPage.ResetPassLink();
 
-            var resetPassPage = new ResetPass(_driver);
+            var resetPassPage = new ResendMail(_driver);
             resetPassPage.EnterMail("asd@abv.bg");
             string actualError = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/div[2]/p")).Text;
             Assert.AreEqual("account not found, please check email-address", actualError);
@@ -152,11 +152,15 @@ namespace caiboMerchant.TestCases
             var loginPage = new LoginPage(_driver);
             loginPage.ResetPassLink();
 
-            var resetPassPage = new ResetPass(_driver);
+            var resetPassPage = new ResendMail(_driver);
             resetPassPage.EnterMail("micheal@putsbox.com");
 
+            Actions action = new Actions(_driver);
+            IWebElement resendBut = _driver.FindElement(By.LinkText("resend"));
+            action.KeyDown(Keys.Control).Click(resendBut).KeyUp(Keys.Control).Build().Perform();
 
-            //_driver.FindElement(By.CssSelector("body")).SendKeys(Keys.Control + "t");
+            string newTab = _driver.WindowHandles.Last();
+            _driver.SwitchTo().Window(newTab);
 
 
             _driver.Navigate().GoToUrl("https://putsbox.com/");
@@ -169,7 +173,36 @@ namespace caiboMerchant.TestCases
             var resetMail = _driver.FindElement(By.XPath("/html/body/div/div[1]/div/table/tbody/tr[1]/td[2]")).Displayed;
             Assert.IsTrue(resetMail);
 
+            //clear inbox history
+            IWebElement clearHistory = _driver.FindElement(By.LinkText("Clear History"));
+            clearHistory.Click();
+            IAlert confirmAlert = _driver.SwitchTo().Alert();
+            confirmAlert.Accept();
 
+            string firstTab = _driver.WindowHandles.First();
+            _driver.SwitchTo().Window(firstTab);
+
+            var resendMailPage = new ResendMail (_driver);
+            resendMailPage.ResendMailButton();
+
+            var email = _driver.FindElement(By.Name("login_email"));
+            email.SendKeys("micheal@putsbox.com");
+            var contButt = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/footer/button"));
+            contButt.Click();
+
+           // resetPassPage.EnterMail("micheal@putsbox.com"); to investigate why not working
+
+            _driver.SwitchTo().Window(newTab);
+
+
+
+             resetMail = _driver.FindElement(By.XPath("/html/body/div/div[1]/div/table/tbody/tr[1]/td[2]")).Displayed;
+            Assert.IsTrue(resetMail);
+
+             clearHistory = _driver.FindElement(By.LinkText("Clear History"));
+            clearHistory.Click();
+             confirmAlert = _driver.SwitchTo().Alert();
+            confirmAlert.Accept();
         }
 
 
