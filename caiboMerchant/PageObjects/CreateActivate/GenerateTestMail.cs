@@ -15,6 +15,9 @@ namespace caiboMerchant.PageObjects.CreateActivate
         [FindsBy(How = How.PartialLinkText, Using = "Sign in")]
         public IWebElement SignIn;
 
+        [FindsBy(How = How.PartialLinkText, Using = "Sign out")]
+        public IWebElement SignOut;
+
         [FindsBy(How = How.Id, Using = "user_email")]
         public IWebElement EmailPutsbox;
 
@@ -31,7 +34,7 @@ namespace caiboMerchant.PageObjects.CreateActivate
         public  IWebElement GetNewMail;
 
 
-        [FindsBy(How = How.PartialLinkText, Using = " (1)")]
+        [FindsBy(How = How.PartialLinkText, Using = "micheal")] 
         public IWebElement TestMail;
 
         [FindsBy(How = How.PartialLinkText, Using = "HTML")]
@@ -66,11 +69,17 @@ namespace caiboMerchant.PageObjects.CreateActivate
             SignInButton.Click();
         }
         
-        public void OpenResetMail()
+        public void OpenResetLink()
         {
             TestMail.Click();
             HtmlLink.Click();
         }
+        public void OpenInbox()
+        {
+            TestMail.Click();
+            
+        }
+
 
         public void ClickResetPass()
         {
@@ -82,6 +91,12 @@ namespace caiboMerchant.PageObjects.CreateActivate
         {
             ClearHistoryButton.Click();
             
+        }
+
+        public void InboxSignOut()
+        {
+            SignOut.Click();
+
         }
     }
 }

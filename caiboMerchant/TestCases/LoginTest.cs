@@ -9,6 +9,7 @@ using System.IO;
 using System.Reflection;
 using caiboMerchant.PageObjects.Login;
 using caiboMerchant.PageObjects.CreateActivate;
+using caiboMerchant.PageObjects.MyAccount;
 using System.Linq;
 using OpenQA.Selenium.Interactions;
 using System.Threading;
@@ -27,6 +28,16 @@ namespace caiboMerchant.TestCases
             _driver.Manage().Window.Maximize();
             //_wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
             _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(20);
+
+            _driver.Navigate().GoToUrl("https://putsbox.com/");
+            var inbox = new GenerateTestMail(_driver);
+            inbox.PutsboxSignIn();
+            inbox.OpenInbox();
+            inbox.ClearHistory();
+            IAlert confirmAlert = _driver.SwitchTo().Alert();
+            confirmAlert.Accept();
+            inbox.InboxSignOut();
+
             _driver.Navigate().GoToUrl("https://caibo-merchant-staging.sepa-cyber.com/en");
 
         }
@@ -99,28 +110,25 @@ namespace caiboMerchant.TestCases
 
             _driver.Navigate().Refresh();
            
-            putsboxMail.OpenResetMail();
+            putsboxMail.OpenResetLink();
 
             string newTab = _driver.WindowHandles.Last();
             _driver.SwitchTo().Window(newTab);
 
             putsboxMail.ClickResetPass();
 
-            resetPassPage.NewConfirmPass("Sepacyber1!", "Sepacyber1!");
+            resetPassPage.NewConfirmPass("Sepacyber1@", "Sepacyber1@");
                 
              
             string successMessage = _driver.FindElement(By.XPath("//*[@id='form-message_resetpw']/p")).Text;
             Assert.AreEqual("You have successfully changed your password.", successMessage);
 
+            //continue butt
+
             string inboxTab = _driver.WindowHandles.First();
             _driver.SwitchTo().Window(inboxTab);
 
-             //clear history
-           
-            putsboxMail.ClearHistory();
-            IAlert confirmAlert = _driver.SwitchTo().Alert();
-            confirmAlert.Accept();
-
+            
 
         }
 
@@ -142,7 +150,7 @@ namespace caiboMerchant.TestCases
 
             _driver.Navigate().Refresh();
 
-            putsboxMail.OpenResetMail();
+            putsboxMail.OpenResetLink();
 
             string newTab = _driver.WindowHandles.Last();
             _driver.SwitchTo().Window(newTab);
@@ -158,11 +166,7 @@ namespace caiboMerchant.TestCases
             string inboxTab = _driver.WindowHandles.First();
             _driver.SwitchTo().Window(inboxTab);
 
-            //clear history
-
-            putsboxMail.ClearHistory();
-            IAlert confirmAlert = _driver.SwitchTo().Alert();
-            confirmAlert.Accept();
+          
         }
 
             [Test]
@@ -223,18 +227,117 @@ namespace caiboMerchant.TestCases
              resetMail = _driver.FindElement(By.XPath("/html/body/div/div[1]/div/table/tbody/tr[1]/td[2]")).Displayed;
             Assert.IsTrue(resetMail);
 
-            //clear inbox history
-            putsboxSignIn.ClearHistory();
-            confirmAlert = _driver.SwitchTo().Alert();
-            confirmAlert.Accept();
+         
 
         }
 
+        [Test]
+
+        public void LoginNewPass()
+        {
+            var loginPage = new LoginPage(_driver);
+            loginPage.ResetPassLink();
+
+
+            var resetPassPage = new ResetPass(_driver);
+            resetPassPage.EnterMail("micheal@putsbox.com");
+
+            _driver.Navigate().GoToUrl("https://putsbox.com/");
+            var putsboxMail = new GenerateTestMail(_driver);
+            putsboxMail.PutsboxSignIn();
+
+            _driver.Navigate().Refresh();
+
+            putsboxMail.OpenResetLink();
+
+            string newTab = _driver.WindowHandles.Last();
+            _driver.SwitchTo().Window(newTab);
+
+            putsboxMail.ClickResetPass();
+
+            resetPassPage.NewConfirmPass("Sepacyber2!", "Sepacyber2!");
+
+            IWebElement continueToAccButton = _driver.FindElement(By.Id("changedButton"));
+            continueToAccButton.Click();
+
+            loginPage.EnterCredentials("micheal@putsbox.com", "Sepacyber2!");
+
+            Assert.AreEqual("https://caibo-merchant-staging.sepa-cyber.com/en/dashboard", _driver.Url);
+
+            string inboxTab = _driver.WindowHandles.First();
+            _driver.SwitchTo().Window(inboxTab);
+
+        }
+
+        [Test]
+
+        public void LoginOldPass()
+        {
+            var loginPage = new LoginPage(_driver);
+            loginPage.ResetPassLink();
+
+
+            var resetPassPage = new ResetPass(_driver);
+            resetPassPage.EnterMail("micheal@putsbox.com");
+
+            _driver.Navigate().GoToUrl("https://putsbox.com/");
+            var putsboxMail = new GenerateTestMail(_driver);
+            putsboxMail.PutsboxSignIn();
+
+            _driver.Navigate().Refresh();
+
+            putsboxMail.OpenResetLink();
+
+            string newTab = _driver.WindowHandles.Last();
+            _driver.SwitchTo().Window(newTab);
+
+            putsboxMail.ClickResetPass();
+
+            resetPassPage.NewConfirmPass("Sepacyber1@", "Sepacyber1@");
+
+            IWebElement continueToAccButton = _driver.FindElement(By.Id("changedButton"));
+            continueToAccButton.Click();
+
+            loginPage.EnterCredentials("micheal@putsbox.com", "Sepacyber1!");
+
+            string actualError = _driver.FindElement(By.XPath("html/body/div/div/main/div/form/div[2]/p")).Text;
+            Assert.AreEqual("Incorrect email or password!", actualError);
+
+        }
+
+        [Test]
+        public void LogOut()
+        {
+            var loginPage = new LoginPage(_driver);
+            var dashboard = new Dashboard(_driver);
+            loginPage.EnterCredentials("israel_mayert@putsbox.com", "Sepacyber1!");
+            dashboard.SignOut();
+
+            var header = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/header/h3")).Displayed;
+            Assert.IsTrue(header);
+        }
+
+        [Test]
+        public void LoginAfterLogout()
+        {
+            var loginPage = new LoginPage(_driver);
+            var dashboard = new Dashboard(_driver);
+            loginPage.EnterCredentials("israel_mayert@putsbox.com", "Sepacyber1!");
+            dashboard.SignOut();
+
+            var continueButton = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/footer/button"));
+            continueButton.Click();
+            string emailError = _driver.FindElement(By.Id("email-error")).Text;
+            Assert.AreEqual("This field is required.", emailError);
+            string passError = _driver.FindElement(By.Id("password-error")).Text;
+            Assert.AreEqual("This field is required.", passError);
+
+        }
 
         [TearDown]
         public void EndTest()
         {
-           // _driver.Quit();
+            _driver.Quit();
         }
     }
 }
