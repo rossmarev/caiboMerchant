@@ -1,11 +1,12 @@
 ﻿using SeleniumExtras.PageObjects;
 using OpenQA.Selenium;
 
-
 namespace caiboMerchant.PageObjects.CreateActivate
 {
     public class GenerateTestMail
     {
+        IWebDriver driver;
+
         public GenerateTestMail(IWebDriver driver)
         {
             PageFactory.InitElements(driver, this);
@@ -30,8 +31,19 @@ namespace caiboMerchant.PageObjects.CreateActivate
         public  IWebElement GetNewMail;
 
 
+        [FindsBy(How = How.PartialLinkText, Using = " (1)")]
+        public IWebElement TestMail;
 
-      
+        [FindsBy(How = How.PartialLinkText, Using = "HTML")]
+        public IWebElement HtmlLink;
+
+        [FindsBy(How = How.LinkText, Using = "Reset Password")]
+        public IWebElement ResetPassButton;
+
+        [FindsBy(How = How.LinkText, Using ="Clear History")]
+        public IWebElement ClearHistoryButton;
+
+
 
 
 
@@ -54,6 +66,23 @@ namespace caiboMerchant.PageObjects.CreateActivate
             SignInButton.Click();
         }
         
+        public void OpenResetMail()
+        {
+            TestMail.Click();
+            HtmlLink.Click();
+        }
+
+        public void ClickResetPass()
+        {
+            
+            ResetPassButton.Click();
+        }
+
+        public void ClearHistory()
+        {
+            ClearHistoryButton.Click();
+            
+        }
     }
 }
 

@@ -90,56 +90,88 @@ namespace caiboMerchant.TestCases
             loginPage.ResetPassLink();
 
 
-            var resetPassPage = new ResendMail(_driver);
+            var resetPassPage = new ResetPass(_driver);
             resetPassPage.EnterMail("micheal@putsbox.com");
 
             _driver.Navigate().GoToUrl("https://putsbox.com/");
-            var putsboxSignIn = new GenerateTestMail(_driver);
-            putsboxSignIn.PutsboxSignIn();
+            var putsboxMail = new GenerateTestMail(_driver);
+            putsboxMail.PutsboxSignIn();
 
-
-          
-
-            var testMail = _driver.FindElement(By.PartialLinkText("micheal"));  
-            testMail.Click();
-
-            IWebElement htmlMail = _driver.FindElement(By.PartialLinkText("HTML"));
-            htmlMail.Click();
+            _driver.Navigate().Refresh();
+           
+            putsboxMail.OpenResetMail();
 
             string newTab = _driver.WindowHandles.Last();
             _driver.SwitchTo().Window(newTab);
 
-            IWebElement resetPass = _driver.FindElement(By.LinkText("Reset Password"));
-            resetPass.Click();
+            putsboxMail.ClickResetPass();
 
-            
-            var newPass = _driver.FindElement(By.Id("password"));
-            newPass.SendKeys("Sepacyber1@");
-            var confirmNewPass = _driver.FindElement(By.Id("repeat_password"));
-            confirmNewPass.SendKeys("Sepacyber1@");
-            var confirmButton = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/footer/button"));
-            confirmButton.Click();
-
+            resetPassPage.NewConfirmPass("Sepacyber1!", "Sepacyber1!");
+                
+             
             string successMessage = _driver.FindElement(By.XPath("//*[@id='form-message_resetpw']/p")).Text;
             Assert.AreEqual("You have successfully changed your password.", successMessage);
 
-            //clear inbox history
             string inboxTab = _driver.WindowHandles.First();
             _driver.SwitchTo().Window(inboxTab);
-            IWebElement clearHistory = _driver.FindElement(By.LinkText("Clear History"));
-            clearHistory.Click();
+
+             //clear history
+           
+            putsboxMail.ClearHistory();
             IAlert confirmAlert = _driver.SwitchTo().Alert();
             confirmAlert.Accept();
 
 
         }
+
+
         [Test]
+
+        public void ResetMismatchingPass()
+        {
+            var loginPage = new LoginPage(_driver);
+            loginPage.ResetPassLink();
+
+
+            var resetPassPage = new ResetPass(_driver);
+            resetPassPage.EnterMail("micheal@putsbox.com");
+
+            _driver.Navigate().GoToUrl("https://putsbox.com/");
+            var putsboxMail = new GenerateTestMail(_driver);
+            putsboxMail.PutsboxSignIn();
+
+            _driver.Navigate().Refresh();
+
+            putsboxMail.OpenResetMail();
+
+            string newTab = _driver.WindowHandles.Last();
+            _driver.SwitchTo().Window(newTab);
+
+            putsboxMail.ClickResetPass();
+
+            resetPassPage.NewConfirmPass("Sepacyber1!", "Sepacyber1@");
+
+
+            string errorMessage = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/div[2]/p")).Text;
+            Assert.AreEqual("Passwords do not match!", errorMessage);
+
+            string inboxTab = _driver.WindowHandles.First();
+            _driver.SwitchTo().Window(inboxTab);
+
+            //clear history
+
+            putsboxMail.ClearHistory();
+            IAlert confirmAlert = _driver.SwitchTo().Alert();
+            confirmAlert.Accept();
+        }
+
+            [Test]
         public void ResetPassWrongMail()
         {
             var loginPage = new LoginPage(_driver);
             loginPage.ResetPassLink();
 
-            var resetPassPage = new ResendMail(_driver);
+            var resetPassPage = new ResetPass(_driver);
             resetPassPage.EnterMail("asd@abv.bg");
             string actualError = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/div[2]/p")).Text;
             Assert.AreEqual("account not found, please check email-address", actualError);
@@ -152,7 +184,7 @@ namespace caiboMerchant.TestCases
             var loginPage = new LoginPage(_driver);
             loginPage.ResetPassLink();
 
-            var resetPassPage = new ResendMail(_driver);
+            var resetPassPage = new ResetPass(_driver);
             resetPassPage.EnterMail("micheal@putsbox.com");
 
             Actions action = new Actions(_driver);
@@ -174,35 +206,28 @@ namespace caiboMerchant.TestCases
             Assert.IsTrue(resetMail);
 
             //clear inbox history
-            IWebElement clearHistory = _driver.FindElement(By.LinkText("Clear History"));
-            clearHistory.Click();
+            putsboxSignIn.ClearHistory();
             IAlert confirmAlert = _driver.SwitchTo().Alert();
             confirmAlert.Accept();
 
             string firstTab = _driver.WindowHandles.First();
             _driver.SwitchTo().Window(firstTab);
 
-            var resendMailPage = new ResendMail (_driver);
-            resendMailPage.ResendMailButton();
+            resetPassPage.ResendMailButton();
 
-            var email = _driver.FindElement(By.Name("login_email"));
-            email.SendKeys("micheal@putsbox.com");
-            var contButt = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/footer/button"));
-            contButt.Click();
-
-           // resetPassPage.EnterMail("micheal@putsbox.com"); to investigate why not working
+           var enterResendMail = new ResetPass(_driver);
+            enterResendMail.EnterMail("micheal@putsbox.com"); 
 
             _driver.SwitchTo().Window(newTab);
-
-
 
              resetMail = _driver.FindElement(By.XPath("/html/body/div/div[1]/div/table/tbody/tr[1]/td[2]")).Displayed;
             Assert.IsTrue(resetMail);
 
-             clearHistory = _driver.FindElement(By.LinkText("Clear History"));
-            clearHistory.Click();
-             confirmAlert = _driver.SwitchTo().Alert();
+            //clear inbox history
+            putsboxSignIn.ClearHistory();
+            confirmAlert = _driver.SwitchTo().Alert();
             confirmAlert.Accept();
+
         }
 
 

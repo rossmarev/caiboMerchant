@@ -6,9 +6,9 @@ using System.Text;
 
 namespace caiboMerchant.PageObjects.Login
 {
-    public class ResendMail
+    public class ResetPass
     {
-        public ResendMail(IWebDriver driver)
+        public ResetPass(IWebDriver driver)
         {
             PageFactory.InitElements(driver, this);
         }
@@ -24,6 +24,19 @@ namespace caiboMerchant.PageObjects.Login
         [CacheLookup]
         IWebElement ResendButton;
 
+        [FindsBy(How = How.Name, Using = ("password"))]
+        [CacheLookup]
+        IWebElement NewPass;
+
+        [FindsBy(How = How.Name, Using = ("repeat_password"))]
+        [CacheLookup]
+        IWebElement ConfirmPass;
+
+        [FindsBy(How = How.XPath, Using = ("/html/body/div/div/main/div/form/footer/button"))]
+        [CacheLookup]
+        IWebElement ConfirmButton;
+
+
 
 
         public void EnterMail(string mail)
@@ -36,7 +49,16 @@ namespace caiboMerchant.PageObjects.Login
         {
            
            ResendButton.Click();
+           
         }
+        public void NewConfirmPass(string pass, string confirmPass)
+        {
+            NewPass.SendKeys(pass);
+            ConfirmPass.SendKeys(confirmPass);
+            ConfirmButton.Click();
+        }
+
+        
     }
 }
 
