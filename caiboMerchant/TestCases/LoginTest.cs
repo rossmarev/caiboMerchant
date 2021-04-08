@@ -14,6 +14,7 @@ using System.Linq;
 using OpenQA.Selenium.Interactions;
 using System.Threading;
 
+
 namespace caiboMerchant.TestCases
 {
     public class LoginTest
@@ -29,14 +30,14 @@ namespace caiboMerchant.TestCases
             //_wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
             _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(20);
 
-            _driver.Navigate().GoToUrl("https://putsbox.com/");
-            var inbox = new GenerateTestMail(_driver);
-            inbox.PutsboxSignIn();
-            inbox.OpenInbox();
-            inbox.ClearHistory();
-            IAlert confirmAlert = _driver.SwitchTo().Alert();
-            confirmAlert.Accept();
-            inbox.InboxSignOut();
+           // _driver.Navigate().GoToUrl("https://putsbox.com/");
+           // var inbox = new GenerateTestMail(_driver);
+            //inbox.PutsboxSignIn();
+            //inbox.OpenInbox();
+            //inbox.ClearHistory();
+            //IAlert confirmAlert = _driver.SwitchTo().Alert();
+            //confirmAlert.Accept();
+            //inbox.InboxSignOut();
 
             _driver.Navigate().GoToUrl("https://caibo-merchant-staging.sepa-cyber.com/en");
 
@@ -206,7 +207,7 @@ namespace caiboMerchant.TestCases
 
             var testMail = _driver.FindElement(By.PartialLinkText("micheal"));
             testMail.Click();
-            var resetMail = _driver.FindElement(By.XPath("/html/body/div/div[1]/div/table/tbody/tr[1]/td[2]")).Displayed;
+            bool resetMail = _driver.FindElement(By.XPath("/html/body/div/div[1]/div/table/tbody/tr[1]/td[2]")).Displayed;
             Assert.IsTrue(resetMail);
 
             //clear inbox history
@@ -313,7 +314,7 @@ namespace caiboMerchant.TestCases
             loginPage.EnterCredentials("israel_mayert@putsbox.com", "Sepacyber1!");
             dashboard.SignOut();
 
-            var header = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/header/h3")).Displayed;
+            bool header = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/header/h3")).Displayed;
             Assert.IsTrue(header);
         }
 
@@ -332,6 +333,22 @@ namespace caiboMerchant.TestCases
             string passError = _driver.FindElement(By.Id("password-error")).Text;
             Assert.AreEqual("This field is required.", passError);
 
+        }
+
+        [Test]
+        public void VerifyLoginScreen()
+        {
+           
+           var caiboLogo = _driver.FindElement(By.LinkText("Caibo"));
+            var width = caiboLogo.Size.Width;
+            var height = caiboLogo.Size.Height;
+            Assert.Multiple(() =>
+           {
+
+               Assert.IsTrue(caiboLogo.Displayed);
+               Assert.AreEqual(238,width);
+              Assert.AreEqual(58, height);
+           });
         }
 
         [TearDown]

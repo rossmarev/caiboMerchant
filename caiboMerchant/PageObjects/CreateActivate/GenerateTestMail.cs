@@ -5,7 +5,6 @@ namespace caiboMerchant.PageObjects.CreateActivate
 {
     public class GenerateTestMail
     {
-        IWebDriver driver;
 
         public GenerateTestMail(IWebDriver driver)
         {

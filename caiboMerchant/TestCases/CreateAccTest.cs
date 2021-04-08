@@ -30,11 +30,6 @@ namespace caiboMerchant.TestCases
 
         }
 
-
-
-
-
-
         [Test]
         public void CreateAcc()
         {

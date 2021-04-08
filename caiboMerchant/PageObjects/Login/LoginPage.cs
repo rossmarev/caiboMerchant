@@ -28,6 +28,10 @@ namespace caiboMerchant.PageObjects.Login
         [CacheLookup]
         IWebElement ForgotPassLink;
 
+        [FindsBy(How = How.LinkText, Using =("Caibo"))]
+        [CacheLookup]
+        public IWebElement CaiboLogo;
+
 
         public void SignUp()
         {
@@ -46,7 +50,7 @@ namespace caiboMerchant.PageObjects.Login
             ForgotPassLink.Click();
         }
 
-
+       
 
 
     }
