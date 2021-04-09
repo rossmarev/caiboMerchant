@@ -22,6 +22,7 @@ namespace caiboMerchant.TestCases
         IWebDriver _driver;
         WebDriverWait _wait;
 
+
         [SetUp]
         public void Initialize()
         {
@@ -41,9 +42,9 @@ namespace caiboMerchant.TestCases
 
             _driver.Navigate().GoToUrl("https://caibo-merchant-staging.sepa-cyber.com/en");
 
-        }
+    }
 
-        [Test]
+    [Test]
         public void ValidCredentials()
         {
             var loginPage = new LoginPage(_driver);
@@ -336,22 +337,49 @@ namespace caiboMerchant.TestCases
         }
 
         [Test]
-        public void VerifyLoginScreen()
+        public void VerifyCaiboLogo()
         {
-           
-           var caiboLogo = _driver.FindElement(By.LinkText("Caibo"));
-            var width = caiboLogo.Size.Width;
-            var height = caiboLogo.Size.Height;
+            IWebElement caiboLogo = _driver.FindElement(By.LinkText("Caibo"));
+            var logoWidth = caiboLogo.Size.Width;
+            var logoHeight = caiboLogo.Size.Height;
+            var logoPositionX = caiboLogo.Location.X;//96
+            var logoPositionY = caiboLogo.Location.Y;//35
+
+            IWebElement header = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/header/h3"));
+            var headerWidth = header.Size.Width;
+            var headerHeight = header.Size.Height;
+            var headerPositionX = header.Location.X;
+            var headerPositionY = header.Location.Y;
+
             Assert.Multiple(() =>
            {
-
                Assert.IsTrue(caiboLogo.Displayed);
-               Assert.AreEqual(238,width);
-              Assert.AreEqual(58, height);
+               Assert.AreEqual(238,logoWidth);
+              Assert.AreEqual(58, logoHeight);
+               Assert.AreEqual(96, logoPositionX);
+               Assert.AreEqual(35, logoPositionY);
+
+               Assert.IsTrue(header.Displayed);
+               Assert.AreEqual(540, headerWidth);
+               Assert.AreEqual(52, headerHeight);
+               Assert.AreEqual(690, headerPositionX);
+               Assert.AreEqual(325, headerPositionY);
            });
         }
+        [Test]
+        public void VerifyHeader()
+        {
+           
+        }
 
-        [TearDown]
+        [Test]
+        public void VerifyEmailField()
+        {
+          
+
+        }
+
+            [TearDown]
         public void EndTest()
         {
             _driver.Quit();
