@@ -70,7 +70,6 @@ namespace caiboMerchant.PageObjects.CreateActivate
         
         public void OpenResetLink()
         {
-            TestMail.Click();
             HtmlLink.Click();
         }
         public void OpenInbox()

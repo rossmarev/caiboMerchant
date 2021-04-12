@@ -17,7 +17,7 @@ using System.Threading;
 
 namespace caiboMerchant.TestCases
 {
-    public class LoginTest
+    public class LoginTestsInbox
     {
         IWebDriver _driver;
         WebDriverWait _wait;
@@ -29,89 +29,34 @@ namespace caiboMerchant.TestCases
             _driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
             _driver.Manage().Window.Maximize();
             //_wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
-            _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(20);
+            _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
 
-           // _driver.Navigate().GoToUrl("https://putsbox.com/");
-           // var inbox = new GenerateTestMail(_driver);
-            //inbox.PutsboxSignIn();
-            //inbox.OpenInbox();
-            //inbox.ClearHistory();
-            //IAlert confirmAlert = _driver.SwitchTo().Alert();
-            //confirmAlert.Accept();
-            //inbox.InboxSignOut();
-
+            _driver.Navigate().GoToUrl("https://putsbox.com/micheal/inspect");
+            var clearHistory = _driver.FindElement(By.LinkText("Clear History"));
+            clearHistory.Click();
+            IAlert confirmAlert = _driver.SwitchTo().Alert();
+            confirmAlert.Accept();
+            Thread.Sleep(3000);
             _driver.Navigate().GoToUrl("https://caibo-merchant-staging.sepa-cyber.com/en");
 
-    }
-
-    [Test]
-        public void ValidCredentials()
-        {
-            var loginPage = new LoginPage(_driver);
-            loginPage.EnterCredentials("israel_mayert@putsbox.com", "Sepacyber1!");
-
-            Assert.AreEqual("https://caibo-merchant-staging.sepa-cyber.com/en/registration", _driver.Url);
         }
-
-        [Test]
-        public void SignUpLink()
-        {
-            
-
-           var loginPage = new LoginPage(_driver);
-            loginPage.SignUp();
-            Assert.AreEqual("https://caibo-merchant-staging.sepa-cyber.com/en//signup", _driver.Url);
-
-        }
-
-        [Test]
-        public void InvalidEmailFormat()
-        {
-            var loginPage = new LoginPage(_driver);
-            loginPage.EnterCredentials("asdf", "Sepacyber1!");
-            string actualError = _driver.FindElement(By.Id("email-error")).Text;
-            Assert.AreEqual("Please enter a valid email address.", actualError);
-        }
-
-        [Test]
-        public void WrongPass()
-        {
-           var loginPage = new LoginPage(_driver);
-            loginPage.EnterCredentials("israel_mayert@putsbox.com", "wrong pass");
-            string actualError = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/div[2]")).Text;
-            Assert.AreEqual("Incorrect email or password!", actualError);
-        }
-
-        [Test]
-
-        public void WrongEmail()
-        {
-            var loginPage = new LoginPage(_driver);
-            loginPage.EnterCredentials("wrong_email@putsbox.com", "Sepacyber1!");
-            string actualError = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/div[2]")).Text;
-
-            Assert.AreEqual("Incorrect email or password!", actualError);
-
-        }
-
+      
 
         [Test]
 
         public void ResetPasss()
         {
-            var loginPage = new LoginPage(_driver);            
+            var loginPage = new LoginPage(_driver);
             loginPage.ResetPassLink();
 
 
             var resetPassPage = new ResetPass(_driver);
             resetPassPage.EnterMail("micheal@putsbox.com");
 
-            _driver.Navigate().GoToUrl("https://putsbox.com/");
+            _driver.Navigate().GoToUrl("https://putsbox.com/micheal/inspect");
             var putsboxMail = new GenerateTestMail(_driver);
-            putsboxMail.PutsboxSignIn();
+            Thread.Sleep(2000);
 
-            _driver.Navigate().Refresh();
-           
             putsboxMail.OpenResetLink();
 
             string newTab = _driver.WindowHandles.Last();
@@ -120,15 +65,10 @@ namespace caiboMerchant.TestCases
             putsboxMail.ClickResetPass();
 
             resetPassPage.NewConfirmPass("Sepacyber1@", "Sepacyber1@");
-                
-             
+
+
             string successMessage = _driver.FindElement(By.XPath("//*[@id='form-message_resetpw']/p")).Text;
             Assert.AreEqual("You have successfully changed your password.", successMessage);
-
-            //continue butt
-
-            string inboxTab = _driver.WindowHandles.First();
-            _driver.SwitchTo().Window(inboxTab);
 
             
 
@@ -146,11 +86,11 @@ namespace caiboMerchant.TestCases
             var resetPassPage = new ResetPass(_driver);
             resetPassPage.EnterMail("micheal@putsbox.com");
 
-            _driver.Navigate().GoToUrl("https://putsbox.com/");
-            var putsboxMail = new GenerateTestMail(_driver);
-            putsboxMail.PutsboxSignIn();
+            _driver.Navigate().GoToUrl("https://putsbox.com/micheal/inspect");
+            Thread.Sleep(2000);
 
-            _driver.Navigate().Refresh();
+            var putsboxMail = new GenerateTestMail(_driver);
+
 
             putsboxMail.OpenResetLink();
 
@@ -165,28 +105,17 @@ namespace caiboMerchant.TestCases
             string errorMessage = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/div[2]/p")).Text;
             Assert.AreEqual("Passwords do not match!", errorMessage);
 
-            string inboxTab = _driver.WindowHandles.First();
-            _driver.SwitchTo().Window(inboxTab);
+           
 
-          
         }
 
-            [Test]
-        public void ResetPassWrongMail()
-        {
-            var loginPage = new LoginPage(_driver);
-            loginPage.ResetPassLink();
-
-            var resetPassPage = new ResetPass(_driver);
-            resetPassPage.EnterMail("asd@abv.bg");
-            string actualError = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/div[2]/p")).Text;
-            Assert.AreEqual("account not found, please check email-address", actualError);
-        }
 
         [Test]
 
         public void ResendButton()
         {
+            var putsbox = new GenerateTestMail(_driver);
+
             var loginPage = new LoginPage(_driver);
             loginPage.ResetPassLink();
 
@@ -201,35 +130,36 @@ namespace caiboMerchant.TestCases
             _driver.SwitchTo().Window(newTab);
 
 
-            _driver.Navigate().GoToUrl("https://putsbox.com/");
+            _driver.Navigate().GoToUrl("https://putsbox.com/micheal/inspect");
+            Thread.Sleep(3000);
 
-            var putsboxSignIn = new GenerateTestMail(_driver);
-            putsboxSignIn.PutsboxSignIn();
 
-            var testMail = _driver.FindElement(By.PartialLinkText("micheal"));
-            testMail.Click();
             bool resetMail = _driver.FindElement(By.XPath("/html/body/div/div[1]/div/table/tbody/tr[1]/td[2]")).Displayed;
             Assert.IsTrue(resetMail);
 
             //clear inbox history
-            putsboxSignIn.ClearHistory();
+            putsbox.ClearHistory();
             IAlert confirmAlert = _driver.SwitchTo().Alert();
             confirmAlert.Accept();
+            Thread.Sleep(4000);
+
 
             string firstTab = _driver.WindowHandles.First();
             _driver.SwitchTo().Window(firstTab);
 
             resetPassPage.ResendMailButton();
 
-           var enterResendMail = new ResetPass(_driver);
-            enterResendMail.EnterMail("micheal@putsbox.com"); 
+            var enterResendMail = new ResetPass(_driver);
+            enterResendMail.EnterMail("micheal@putsbox.com");
 
             _driver.SwitchTo().Window(newTab);
+            Thread.Sleep(5000);
 
-             resetMail = _driver.FindElement(By.XPath("/html/body/div/div[1]/div/table/tbody/tr[1]/td[2]")).Displayed;
-            Assert.IsTrue(resetMail);
+            bool resetMail2 = _driver.FindElement(By.XPath("/html/body/div/div[1]/div/table/tbody/tr[1]/td[2]")).Displayed;
+            Assert.IsTrue(resetMail2);
 
-         
+           
+
 
         }
 
@@ -244,11 +174,11 @@ namespace caiboMerchant.TestCases
             var resetPassPage = new ResetPass(_driver);
             resetPassPage.EnterMail("micheal@putsbox.com");
 
-            _driver.Navigate().GoToUrl("https://putsbox.com/");
-            var putsboxMail = new GenerateTestMail(_driver);
-            putsboxMail.PutsboxSignIn();
-
+            _driver.Navigate().GoToUrl("https://putsbox.com/micheal/inspect");
             _driver.Navigate().Refresh();
+
+            var putsboxMail = new GenerateTestMail(_driver);
+
 
             putsboxMail.OpenResetLink();
 
@@ -266,8 +196,7 @@ namespace caiboMerchant.TestCases
 
             Assert.AreEqual("https://caibo-merchant-staging.sepa-cyber.com/en/dashboard", _driver.Url);
 
-            string inboxTab = _driver.WindowHandles.First();
-            _driver.SwitchTo().Window(inboxTab);
+            
 
         }
 
@@ -282,11 +211,11 @@ namespace caiboMerchant.TestCases
             var resetPassPage = new ResetPass(_driver);
             resetPassPage.EnterMail("micheal@putsbox.com");
 
-            _driver.Navigate().GoToUrl("https://putsbox.com/");
-            var putsboxMail = new GenerateTestMail(_driver);
-            putsboxMail.PutsboxSignIn();
-
+            _driver.Navigate().GoToUrl("https://putsbox.com/micheal/inspect");
             _driver.Navigate().Refresh();
+
+            var putsboxMail = new GenerateTestMail(_driver);
+
 
             putsboxMail.OpenResetLink();
 
@@ -305,6 +234,94 @@ namespace caiboMerchant.TestCases
             string actualError = _driver.FindElement(By.XPath("html/body/div/div/main/div/form/div[2]/p")).Text;
             Assert.AreEqual("Incorrect email or password!", actualError);
 
+           
+
+        }
+
+       
+
+        [TearDown]
+        public void EndTest()
+        {
+            _driver.Quit();
+        }
+    }
+
+    public class LoginTestsNoInbox
+     {
+        IWebDriver _driver;
+        WebDriverWait _wait;
+
+
+        [SetUp]
+        public void Initialize()
+        {
+            _driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            _driver.Manage().Window.Maximize();
+            //_wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+            _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+            _driver.Navigate().GoToUrl("https://caibo-merchant-staging.sepa-cyber.com/en");
+
+        }
+
+        [Test]
+        public void ValidCredentials()
+        {
+            var loginPage = new LoginPage(_driver);
+            loginPage.EnterCredentials("israel_mayert@putsbox.com", "Sepacyber1!");
+
+            Assert.AreEqual("https://caibo-merchant-staging.sepa-cyber.com/en/registration", _driver.Url);
+        }
+
+       
+        [Test]
+        public void SignUpLink()
+        {
+
+
+            var loginPage = new LoginPage(_driver);
+            loginPage.SignUp();
+            Assert.AreEqual("https://caibo-merchant-staging.sepa-cyber.com/en//signup", _driver.Url);
+
+        }
+
+        [Test]
+        public void InvalidEmailFormat()
+        {
+            var loginPage = new LoginPage(_driver);
+            loginPage.EnterCredentials("asdf", "Sepacyber1!");
+            string actualError = _driver.FindElement(By.Id("email-error")).Text;
+            Assert.AreEqual("Please enter a valid email address.", actualError);
+        }
+
+        [Test]
+        public void WrongPass()
+        {
+            var loginPage = new LoginPage(_driver);
+            loginPage.EnterCredentials("israel_mayert@putsbox.com", "wrong pass");
+            string actualError = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/div[2]")).Text;
+            Assert.AreEqual("Incorrect email or password!", actualError);
+        }
+
+        [Test]
+        public void WrongEmail()
+        {
+            var loginPage = new LoginPage(_driver);
+            loginPage.EnterCredentials("wrong_email@putsbox.com", "Sepacyber1!");
+            string actualError = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/div[2]")).Text;
+            Assert.AreEqual("Incorrect email or password!", actualError);
+        }
+
+        [Test]
+        public void ResetPassWrongMail()
+        {
+            var loginPage = new LoginPage(_driver);
+            loginPage.ResetPassLink();
+
+            var resetPassPage = new ResetPass(_driver);
+            resetPassPage.EnterMail("asd@abv.bg");
+            string actualError = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/div[2]/p")).Text;
+            Assert.AreEqual("account not found, please check email-address", actualError);
         }
 
         [Test]
@@ -337,7 +354,7 @@ namespace caiboMerchant.TestCases
         }
 
         [Test]
-        public void VerifyCaiboLogo()
+        public void VerifyLoginElements()
         {
             IWebElement caiboLogo = _driver.FindElement(By.LinkText("Caibo"));
             var logoWidth = caiboLogo.Size.Width;
@@ -351,35 +368,62 @@ namespace caiboMerchant.TestCases
             var headerPositionX = header.Location.X;
             var headerPositionY = header.Location.Y;
 
+            IWebElement emailField = _driver.FindElement(By.Id("email"));
+            var emailWidth = emailField.Size.Width;
+            var emailHeight = emailField.Size.Height;
+            var emailPositionX = emailField.Location.X;
+            var emailPositionY = emailField.Location.Y;
+
+            IWebElement passField = _driver.FindElement(By.Id("password"));
+            var passWidth = passField.Size.Width;
+            var passHeight = passField.Size.Height;
+            var passPositionX = passField.Location.X;
+            var passPositionY = passField.Location.Y;
+
+            IWebElement continueButton = _driver.FindElement(By.CssSelector("button[type = 'submit']"));
+            var buttonWidth = continueButton.Size.Width;
+            var buttonHeight = continueButton.Size.Height;
+            var buttonPositionX = continueButton.Location.X;
+            var buttonPositionY = continueButton.Location.Y;
+
+
             Assert.Multiple(() =>
-           {
-               Assert.IsTrue(caiboLogo.Displayed);
-               Assert.AreEqual(238,logoWidth);
-              Assert.AreEqual(58, logoHeight);
-               Assert.AreEqual(96, logoPositionX);
-               Assert.AreEqual(35, logoPositionY);
+            {
+                Assert.IsTrue(caiboLogo.Displayed);
+                Assert.AreEqual(238, logoWidth);
+                Assert.AreEqual(58, logoHeight);
+                Assert.AreEqual(96, logoPositionX);
+                Assert.AreEqual(35, logoPositionY);
 
-               Assert.IsTrue(header.Displayed);
-               Assert.AreEqual(540, headerWidth);
-               Assert.AreEqual(52, headerHeight);
-               Assert.AreEqual(690, headerPositionX);
-               Assert.AreEqual(325, headerPositionY);
-           });
+                Assert.IsTrue(header.Displayed);
+                Assert.AreEqual(540, headerWidth);
+                Assert.AreEqual(52, headerHeight);
+                Assert.AreEqual(690, headerPositionX);
+                Assert.AreEqual(325, headerPositionY);
+
+                Assert.IsTrue(emailField.Enabled);
+                Assert.AreEqual(530, emailWidth);
+                Assert.AreEqual(48, emailHeight);
+                Assert.AreEqual(695, emailPositionX);
+                Assert.AreEqual(458, emailPositionY);
+
+                Assert.IsTrue(passField.Enabled);
+                Assert.AreEqual(530, passWidth);
+                Assert.AreEqual(48, passHeight);
+                Assert.AreEqual(695, passPositionX);
+                Assert.AreEqual(568, passPositionY);
+
+                Assert.IsTrue(continueButton.Enabled);
+                Assert.AreEqual(540, buttonWidth);
+                Assert.AreEqual(68, buttonHeight);
+                Assert.AreEqual(690, buttonPositionX);
+                Assert.AreEqual(661, buttonPositionY);
+
+
+            });
         }
-        [Test]
-        public void VerifyHeader()
-        {
-           
-        }
 
-        [Test]
-        public void VerifyEmailField()
-        {
-          
-
-        }
-
-            [TearDown]
+        [TearDown]
         public void EndTest()
         {
             _driver.Quit();
