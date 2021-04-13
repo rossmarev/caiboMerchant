@@ -21,28 +21,32 @@ namespace caiboMerchant.PageObjects.CreateActivate
 
         [FindsBy(How = How.Id, Using = "email")]
         [CacheLookup]
-        public  IWebElement Email;
+          IWebElement Email;
         
 
         [FindsBy(How = How.Id, Using = "name")]
         [CacheLookup]
-        private IWebElement Name;
+         IWebElement Name;
 
         [FindsBy(How = How.Id, Using = "company")]
         [CacheLookup]
-        private IWebElement Company;
+         IWebElement Company;
 
         [FindsBy(How = How.Id, Using = "password")]
         [CacheLookup]
-        private IWebElement Password;
+         IWebElement Password;
 
         [FindsBy(How = How.Id, Using = "password_confirm")]
         [CacheLookup]
-        private IWebElement ConfirmPassword;
+         IWebElement ConfirmPassword;
 
         [FindsBy(How = How.XPath, Using = "/html/body/div/div/main/div/form/footer/button")]
         [CacheLookup]
-        private IWebElement CreateAccButton;
+         IWebElement CreateAccButton;
+
+        [FindsBy(How = How.LinkText, Using = "Login")]
+        [CacheLookup]
+         IWebElement LoginLink;
 
         public void CreateAccount()
         {
@@ -55,6 +59,28 @@ namespace caiboMerchant.PageObjects.CreateActivate
 
         }
 
+        public void Login()
+        {
+            LoginLink.Click();
+        }
+
+        public void EmailField(string email)
+        {
+            Email.SendKeys(email);
+            Name.Click();
+        }
+        public void PasswordField(string pass)
+        {
+            Password.SendKeys(pass);
+            Name.Click();
+        }
+
+        public void PasswordsMatch(string pass,string confirmPass)
+        {
+            Password.SendKeys(pass);
+            ConfirmPassword.SendKeys(confirmPass);
+            Name.Click();
+        }
 
     }
 }

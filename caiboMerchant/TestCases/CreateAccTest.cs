@@ -11,6 +11,7 @@ using SeleniumExtras.WaitHelpers;
 using OpenQA.Selenium.Support.UI;
 using ExpectedConditions = OpenQA.Selenium.Support.UI.ExpectedConditions;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace caiboMerchant.TestCases
 {
@@ -25,7 +26,8 @@ namespace caiboMerchant.TestCases
             _driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
             _driver.Manage().Window.Maximize();
             _wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
-           _driver.Manage().Timeouts().ImplicitWait=TimeSpan.FromSeconds(20); 
+           _driver.Manage().Timeouts().ImplicitWait=TimeSpan.FromSeconds(20);
+            _driver.Navigate().GoToUrl("https://caibo-merchant-staging.sepa-cyber.com/en//signup");
 
 
         }
@@ -34,6 +36,7 @@ namespace caiboMerchant.TestCases
         public void CreateAcc()
         {
             _driver.Navigate().GoToUrl("https://putsbox.com/");
+
             var generateTestMail = new GenerateTestMail(_driver);
             var testMail = generateTestMail.CopyMail();
 
@@ -124,11 +127,136 @@ namespace caiboMerchant.TestCases
             Assert.AreEqual("Application status: Pending", actualStatus);
         }
 
+        [Test]
+
+        public void LoginLink()
+        {
+            var testMail = "test";//not used
+            var signUpPage = new CreateAccPage(_driver,testMail);
+            signUpPage.Login();
+            Assert.AreEqual("https://caibo-merchant-staging.sepa-cyber.com/en", _driver.Url);
+        }
+
+       [Test]
+       public void WrongEmailFormat()
+        {
+            var testMail = "test";//not used
+            var signUpPage = new CreateAccPage(_driver, testMail);
+            signUpPage.EmailField("wrongMailFormat");
+            var error = _driver.FindElement(By.CssSelector("small[id = 'email-error']")).Text;
+            Assert.AreEqual("Please enter a valid email address.", error);
+        }
+
+        [Test]
+        public void ValidEmailFormat()
+        {
+            var testMail = "test";//not used
+            var signUpPage = new CreateAccPage(_driver, testMail);
+            signUpPage.EmailField("ValidMailFormat@test.com");
+            bool error = _driver.FindElement(By.CssSelector("small[id = 'email-error']")).Displayed;
+            Assert.IsFalse(error);
+        }
+
+        [Test]
+        public void VerifyExistingEmail()
+        {
+            var testMail = "micheal@putsbox.com";
+            var signUpPage = new CreateAccPage(_driver, testMail);
+            signUpPage.CreateAccount();
+            var error = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/div[2]/p")).Text;
+            Assert.AreEqual("This email is already registered",error);
+        }
+
+        [Test]
+        public void VerifyPasswordMasked()
+        {
+            var testMail = "test";//not used
+            var signUpPage = new CreateAccPage(_driver, testMail);
+            signUpPage.PasswordField("password");
+            var passType = _driver.FindElement(By.Id("password")).GetAttribute("type");
+            Assert.AreEqual("password", passType);
+        }
+
+        [Test]
+        public void VerifyPassIndicator()
+        {
+            var testMail = "test";//not used
+            var signUpPage = new CreateAccPage(_driver, testMail);
+                    
+            Assert.Multiple(() =>
+            {
+                signUpPage.PasswordField("P");
+                var passIndicator = _driver.FindElement(By.Id("pwindicator")).Text;
+                var passError = _driver.FindElement(By.Id("password-error")).Text;
+                Assert.AreEqual("very weak", passIndicator);
+                Assert.AreEqual("Password must include at least 8 characters, including numbers, uppercase, lowercase and special character.", passError);
 
 
-       
+                signUpPage.PasswordField("assword");
+                passIndicator = _driver.FindElement(By.Id("pwindicator")).Text;
+                passError = _driver.FindElement(By.Id("password-error")).Text;
+                Assert.AreEqual("weak", passIndicator);
+                Assert.AreEqual("Password must include at least 8 characters, including numbers, uppercase, lowercase and special character.", passError);
+
+                signUpPage.PasswordField("12");
+                passIndicator = _driver.FindElement(By.Id("pwindicator")).Text;
+                passError = _driver.FindElement(By.Id("password-error")).Text;
+                Assert.AreEqual("mediocre", passIndicator);
+                Assert.AreEqual("Password must include at least 8 characters, including numbers, uppercase, lowercase and special character.", passError);
+
+                signUpPage.PasswordField("");
+                passIndicator = _driver.FindElement(By.Id("pwindicator")).Text;
+                bool passError1 = _driver.FindElement(By.Id("password-error")).Displayed;
+                Assert.AreEqual("strong", passIndicator);
+                Assert.IsFalse(passError1);
+
+                signUpPage.PasswordField("!@");
+                passIndicator = _driver.FindElement(By.Id("pwindicator")).Text;
+                passError1 = _driver.FindElement(By.Id("password-error")).Displayed;
+                Assert.AreEqual("very strong", passIndicator);
+                Assert.IsFalse(passError1);
 
 
+            });
+        }
+
+        [Test]
+        public void VerifyPassMatch()
+        {
+            var testMail = "test";//not used
+            var signUpPage = new CreateAccPage(_driver, testMail);
+            signUpPage.PasswordsMatch("Sepacyber1!", "Sepacyber1!i");
+            bool mismatchError = _driver.FindElement(By.Id("password_confirm-error")).Displayed;
+            Assert.IsFalse(mismatchError);
+            
+        }
+
+        [Test]
+        public void VerifyPassMismatch()
+        {
+            var testMail = "test";//not used
+            var signUpPage = new CreateAccPage(_driver, testMail);
+            signUpPage.PasswordsMatch("Sepacyber1!", "Sepacyber111111");
+            var mismatchError = _driver.FindElement(By.Id("password_confirm-error")).Text;
+            Assert.AreEqual("Please enter the same value again.",mismatchError);
+
+        }
+
+        [Test]
+        public void VerifySignUpValidData()
+        {
+            _driver.Navigate().GoToUrl("https://putsbox.com/");
+
+            var putsbox = new GenerateTestMail(_driver);
+            var testMail = putsbox.CopyMail();
+
+            _driver.Navigate().GoToUrl("https://caibo-merchant-staging.sepa-cyber.com/en//signup");
+            var signUpPage = new CreateAccPage(_driver, testMail);
+            signUpPage.CreateAccount();
+            var verifyMailMessage = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/header/h5")).Text;
+            Assert.AreEqual("Verify your email", verifyMailMessage);
+
+        }
 
 
         [TearDown]
