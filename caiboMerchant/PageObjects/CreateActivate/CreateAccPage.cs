@@ -48,13 +48,13 @@ namespace caiboMerchant.PageObjects.CreateActivate
         [CacheLookup]
          IWebElement LoginLink;
 
-        public void CreateAccount()
+        public void CreateAccount(string name,string company,string pass, string confrimPass)
         {
             Email.SendKeys(this.mail);
-            Name.SendKeys("test");
-            Company.SendKeys("testCompany");
-            Password.SendKeys("Sepacyber1!");
-            ConfirmPassword.SendKeys("Sepacyber1!");
+            Name.SendKeys(name);
+            Company.SendKeys(company);
+            Password.SendKeys(pass);
+            ConfirmPassword.SendKeys(confrimPass);
             CreateAccButton.Click();
 
         }

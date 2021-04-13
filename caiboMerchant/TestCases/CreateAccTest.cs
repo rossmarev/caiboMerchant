@@ -44,7 +44,7 @@ namespace caiboMerchant.TestCases
 
             _driver.Navigate().GoToUrl("https://caibo-merchant-staging.sepa-cyber.com/en//signup");
             var createAccPage = new CreateAccPage(_driver, testMail);
-            createAccPage.CreateAccount();
+            createAccPage.CreateAccount("test","testCompany","Sepacyber1!","Sepacyber1!") ;
 
 
             _driver.Navigate().GoToUrl("https://putsbox.com/");
@@ -162,7 +162,7 @@ namespace caiboMerchant.TestCases
         {
             var testMail = "micheal@putsbox.com";
             var signUpPage = new CreateAccPage(_driver, testMail);
-            signUpPage.CreateAccount();
+            signUpPage.CreateAccount("test", "testCompany", "Sepacyber1!", "Sepacyber1!");
             var error = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/div[2]/p")).Text;
             Assert.AreEqual("This email is already registered",error);
         }
@@ -243,7 +243,7 @@ namespace caiboMerchant.TestCases
         }
 
         [Test]
-        public void VerifySignUpValidData()
+        public void SignUpValidData()
         {
             _driver.Navigate().GoToUrl("https://putsbox.com/");
 
@@ -252,12 +252,32 @@ namespace caiboMerchant.TestCases
 
             _driver.Navigate().GoToUrl("https://caibo-merchant-staging.sepa-cyber.com/en//signup");
             var signUpPage = new CreateAccPage(_driver, testMail);
-            signUpPage.CreateAccount();
+            signUpPage.CreateAccount("test", "testCompany", "Sepacyber1!", "Sepacyber1!");
             var verifyMailMessage = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/header/h5")).Text;
             Assert.AreEqual("Verify your email", verifyMailMessage);
 
         }
 
+        [Test]
+        public void SignUpMissingData()
+        {
+            var testMail = "";
+            var signUpPage = new CreateAccPage(_driver, testMail);
+            signUpPage.CreateAccount("d", "d", "", "");
+            bool emailError = _driver.FindElement(By.Id("email-error")).Displayed;
+            bool nameError = _driver.FindElement(By.Id("name-error")).Displayed;
+            bool companyError = _driver.FindElement(By.Id("company-error")).Displayed;
+            bool passError = _driver.FindElement(By.Id("password-error")).Displayed;
+
+            Assert.Multiple(() =>
+            {             
+                Assert.IsTrue(emailError,"mail");
+                Assert.IsTrue(nameError,"name");
+                Assert.IsTrue(companyError,"comp");
+                Assert.IsTrue(passError,"pas");
+            });
+
+        }
 
         [TearDown]
         public void EndTest()
