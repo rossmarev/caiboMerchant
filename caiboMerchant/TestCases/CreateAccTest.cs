@@ -204,13 +204,13 @@ namespace caiboMerchant.TestCases
                 Assert.AreEqual("mediocre", passIndicator);
                 Assert.AreEqual("Password must include at least 8 characters, including numbers, uppercase, lowercase and special character.", passError);
 
-                signUpPage.PasswordField("");
+                signUpPage.PasswordField("!");
                 passIndicator = _driver.FindElement(By.Id("pwindicator")).Text;
                 bool passError1 = _driver.FindElement(By.Id("password-error")).Displayed;
                 Assert.AreEqual("strong", passIndicator);
                 Assert.IsFalse(passError1);
 
-                signUpPage.PasswordField("!@");
+                signUpPage.PasswordField("@");
                 passIndicator = _driver.FindElement(By.Id("pwindicator")).Text;
                 passError1 = _driver.FindElement(By.Id("password-error")).Displayed;
                 Assert.AreEqual("very strong", passIndicator);
@@ -225,7 +225,7 @@ namespace caiboMerchant.TestCases
         {
             var testMail = "test";//not used
             var signUpPage = new CreateAccPage(_driver, testMail);
-            signUpPage.PasswordsMatch("Sepacyber1!", "Sepacyber1!i");
+            signUpPage.PasswordsMatch("Sepacyber1!", "Sepacyber1!");
             bool mismatchError = _driver.FindElement(By.Id("password_confirm-error")).Displayed;
             Assert.IsFalse(mismatchError);
             
@@ -263,7 +263,7 @@ namespace caiboMerchant.TestCases
         {
             var testMail = "";
             var signUpPage = new CreateAccPage(_driver, testMail);
-            signUpPage.CreateAccount("d", "d", "", "");
+            signUpPage.CreateAccount("", "", "", "");
             bool emailError = _driver.FindElement(By.Id("email-error")).Displayed;
             bool nameError = _driver.FindElement(By.Id("name-error")).Displayed;
             bool companyError = _driver.FindElement(By.Id("company-error")).Displayed;
@@ -278,6 +278,106 @@ namespace caiboMerchant.TestCases
             });
 
         }
+
+
+        [Test]
+        public void SignUpWrongEmailFormat()
+        {
+            var testMail = "wrongEmailFormatasd";
+            var signUpPage = new CreateAccPage(_driver, testMail);
+            signUpPage.CreateAccount("test", "testCompany", "Sepacyber1!", "Sepacyber1!");
+            var error = _driver.FindElement(By.CssSelector("small[id = 'email-error']")).Text;
+            Assert.AreEqual("Please enter a valid email address.", error);
+        }
+
+        [Test]
+        public void SignUpInvalidPass()
+        {
+            var testMail = "test@gmail.com";
+            var signUpPage = new CreateAccPage(_driver, testMail);
+            signUpPage.CreateAccount("test", "testCompany", "Sepacyber", "Sepacyber");
+            var error = _driver.FindElement(By.CssSelector("small[id = 'password-error']")).Text;
+            Assert.AreEqual("Password must include at least 8 characters, including numbers, uppercase, lowercase and special character.", error);
+        }
+
+        [Test]
+        public void SignUpMismatchingPass()
+        {
+            var testMail = "test@gmail.com";
+            var signUpPage = new CreateAccPage(_driver, testMail);
+            signUpPage.CreateAccount("test", "testCompany", "Sepacyber1!", "Sepacyber1@");
+            var error = _driver.FindElement(By.CssSelector("small[id = 'password_confirm-error']")).Text;
+            Assert.AreEqual("Please enter the same value again.", error);
+
+
+        }
+
+
+        [Test]
+        public void VerifyConfirmMail()
+        {
+            _driver.Navigate().GoToUrl("https://putsbox.com/");
+
+            var putsbox = new GenerateTestMail(_driver);
+            var testMail = putsbox.CopyMail();
+
+            _driver.Navigate().GoToUrl("https://caibo-merchant-staging.sepa-cyber.com/en//signup");
+            var signUpPage = new CreateAccPage(_driver, testMail);
+            signUpPage.CreateAccount("test", "testCompany", "Sepacyber1!", "Sepacyber1!");
+
+            string mailUserName = testMail.Substring(0, testMail.IndexOf("@"));
+
+            _driver.Navigate().GoToUrl("https://putsbox.com/");
+
+            var checkInbox = _driver.FindElement(By.PartialLinkText(mailUserName));
+            checkInbox.Click();
+            bool confirmMail = _driver.FindElement(By.XPath("/html/body/div/div[1]/div/table/tbody/tr[1]/td[2]")).Displayed;
+            Assert.IsTrue(confirmMail);
+        }
+
+        [Test]
+        public void VerifyResendConfirmMail()
+        {
+            _driver.Navigate().GoToUrl("https://putsbox.com/");
+
+            var putsbox = new GenerateTestMail(_driver);
+            var testMail = putsbox.CopyMail();
+
+            _driver.Navigate().GoToUrl("https://caibo-merchant-staging.sepa-cyber.com/en//signup");
+            var signUpPage = new CreateAccPage(_driver, testMail);
+            signUpPage.CreateAccount("test", "testCompany", "Sepacyber1!", "Sepacyber1!");
+
+
+            //Clcik on resend button, assert 2nd mail is delivered - to be completed when the issue with resend button is resolved
+        }
+
+        [Test]
+        public void VerifyConfirmMailButton()
+        {
+            _driver.Navigate().GoToUrl("https://putsbox.com/");
+
+            var putsbox = new GenerateTestMail(_driver);
+            var testMail = putsbox.CopyMail();
+
+            _driver.Navigate().GoToUrl("https://caibo-merchant-staging.sepa-cyber.com/en//signup");
+            var signUpPage = new CreateAccPage(_driver, testMail);
+            signUpPage.CreateAccount("test", "testCompany", "Sepacyber1!", "Sepacyber1!");
+           
+            _driver.Navigate().GoToUrl("https://putsbox.com/");        
+
+            putsbox.OpenInbox();
+            putsbox.OpenMail();
+
+            string newTab = _driver.WindowHandles.Last();
+            _driver.SwitchTo().Window(newTab);
+            IWebElement confirmMail = _wait.Until(ExpectedConditions.ElementToBeClickable(By.LinkText("Confirm email address")));
+            confirmMail.Click();
+
+           
+            bool activateAccountHeader = _driver.FindElement(By.XPath("//*[@id='main']/div/div/h4")).Displayed;
+            Assert.IsTrue(activateAccountHeader);
+        }
+
 
         [TearDown]
         public void EndTest()

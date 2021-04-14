@@ -21,11 +21,15 @@ namespace caiboMerchant.PageObjects.MyAccount
         [FindsBy(How = How.LinkText, Using = ("Sign out"))]
         [CacheLookup]
         IWebElement SignOutButton;
+       
 
         public void SignOut()
         {
             ProfileButton.Click();
             SignOutButton.Click();
+            
         }
+        
+
     }
 }
