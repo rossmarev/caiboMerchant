@@ -31,9 +31,11 @@ namespace caiboMerchant.TestCases
             //_wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
             _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
 
+            _driver.Navigate().GoToUrl("https://putsbox.com");
+            var putsbox = new GenerateTestMail(_driver);
+            putsbox.PutsboxSignIn();
             _driver.Navigate().GoToUrl("https://putsbox.com/micheal/inspect");
-            var clearHistory = _driver.FindElement(By.LinkText("Clear History"));
-            clearHistory.Click();
+            putsbox.ClearHistory();           
             IAlert confirmAlert = _driver.SwitchTo().Alert();
             confirmAlert.Accept();
             Thread.Sleep(3000);
@@ -103,7 +105,7 @@ namespace caiboMerchant.TestCases
 
 
             string errorMessage = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/div[2]/p")).Text;
-            Assert.AreEqual("Passwords do not match!", errorMessage);
+            Assert.AreEqual("Passwords do not match!o", errorMessage);
 
            
 
@@ -134,8 +136,8 @@ namespace caiboMerchant.TestCases
             Thread.Sleep(3000);
 
 
-            bool resetMail = _driver.FindElement(By.XPath("/html/body/div/div[1]/div/table/tbody/tr[1]/td[2]")).Displayed;
-            Assert.IsTrue(resetMail);
+           
+            Assert.IsTrue(_driver.FindElement(By.XPath("/html/body/div/div[1]/div/table/tbody/tr[1]/td[2]")).Displayed);
 
             //clear inbox history
             putsbox.ClearHistory();
@@ -155,8 +157,7 @@ namespace caiboMerchant.TestCases
             _driver.SwitchTo().Window(newTab);
             Thread.Sleep(5000);
 
-            bool resetMail2 = _driver.FindElement(By.XPath("/html/body/div/div[1]/div/table/tbody/tr[1]/td[2]")).Displayed;
-            Assert.IsTrue(resetMail2);
+            Assert.IsTrue(_driver.FindElement(By.XPath("/html/body/div/div[1]/div/table/tbody/tr[1]/td[2]")).Displayed);
 
            
 
@@ -194,7 +195,7 @@ namespace caiboMerchant.TestCases
 
             loginPage.EnterCredentials("micheal@putsbox.com", "Sepacyber2!");
 
-            Assert.AreEqual("https://caibo-merchant-staging.sepa-cyber.com/en/dashboard", _driver.Url);
+            Assert.AreEqual("https://caibo-merchant-staging.sepa-cyber.com/en/dashboard", _driver.Url,"Login not successful");
 
             
 
@@ -232,7 +233,7 @@ namespace caiboMerchant.TestCases
             loginPage.EnterCredentials("micheal@putsbox.com", "Sepacyber1!");
 
             string actualError = _driver.FindElement(By.XPath("html/body/div/div/main/div/form/div[2]/p")).Text;
-            Assert.AreEqual("Incorrect email or password!", actualError);
+            Assert.AreEqual("Incorrect email or password!", actualError,"Login with old password");
 
            
 
@@ -270,7 +271,7 @@ namespace caiboMerchant.TestCases
             var loginPage = new LoginPage(_driver);
             loginPage.EnterCredentials("israel_mayert@putsbox.com", "Sepacyber1!");
 
-            Assert.AreEqual("https://caibo-merchant-staging.sepa-cyber.com/en/registration", _driver.Url);
+            Assert.AreEqual("https://caibo-merchant-staging.sepa-cyber.com/en/registration", _driver.Url,"Not logged in with valid credentials");
         }
 
        
@@ -281,7 +282,7 @@ namespace caiboMerchant.TestCases
 
             var loginPage = new LoginPage(_driver);
             loginPage.SignUp();
-            Assert.AreEqual("https://caibo-merchant-staging.sepa-cyber.com/en//signup", _driver.Url);
+            Assert.AreEqual("https://caibo-merchant-staging.sepa-cyber.com/en//signup", _driver.Url,"Sign up link not working");
 
         }
 
@@ -309,7 +310,11 @@ namespace caiboMerchant.TestCases
             var loginPage = new LoginPage(_driver);
             loginPage.EnterCredentials("wrong_email@putsbox.com", "Sepacyber1!");
             string actualError = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/div[2]")).Text;
-            Assert.AreEqual("Incorrect email or password!", actualError);
+           Assert.AreEqual("Incorrect email or password!", actualError);
+
+            
+           
+
         }
 
         [Test]
@@ -390,34 +395,35 @@ namespace caiboMerchant.TestCases
             Assert.Multiple(() =>
             {
                 Assert.IsTrue(caiboLogo.Displayed);
-                Assert.AreEqual(238, logoWidth);
-                Assert.AreEqual(58, logoHeight);
-                Assert.AreEqual(96, logoPositionX);
-                Assert.AreEqual(35, logoPositionY);
+                Assert.AreEqual(238, logoWidth,"Element size is wrong");
+                Assert.AreEqual(58, logoHeight, "Element size is wrong");
+                Assert.AreEqual(96, logoPositionX,"Element position is wrong");
+                Assert.AreEqual(35, logoPositionY, "Element position is wrong");
 
                 Assert.IsTrue(header.Displayed);
-                Assert.AreEqual(540, headerWidth);
-                Assert.AreEqual(52, headerHeight);
-                Assert.AreEqual(690, headerPositionX);
-                Assert.AreEqual(325, headerPositionY);
+                Assert.AreEqual("Login to your account", header.Text);
+                Assert.AreEqual(540, headerWidth, "Element size is wrong");
+                Assert.AreEqual(52, headerHeight, "Element size is wrong");
+                Assert.AreEqual(690, headerPositionX, "Element position is wrong");
+                Assert.AreEqual(325, headerPositionY, "Element position is wrong");
 
                 Assert.IsTrue(emailField.Enabled);
-                Assert.AreEqual(530, emailWidth);
-                Assert.AreEqual(48, emailHeight);
-                Assert.AreEqual(695, emailPositionX);
-                Assert.AreEqual(458, emailPositionY);
+                Assert.AreEqual(530, emailWidth, "Element size is wrong");
+                Assert.AreEqual(48, emailHeight, "Element size is wrong");
+                Assert.AreEqual(695, emailPositionX, "Element position is wrong");
+                Assert.AreEqual(458, emailPositionY, "Element position is wrong");
 
                 Assert.IsTrue(passField.Enabled);
-                Assert.AreEqual(530, passWidth);
-                Assert.AreEqual(48, passHeight);
-                Assert.AreEqual(695, passPositionX);
-                Assert.AreEqual(568, passPositionY);
+                Assert.AreEqual(530, passWidth, "Element size is wrong");
+                Assert.AreEqual(48, passHeight, "Element size is wrong");
+                Assert.AreEqual(695, passPositionX, "Element position is wrong");
+                Assert.AreEqual(568, passPositionY, "Element position is wrong");
 
                 Assert.IsTrue(continueButton.Enabled);
-                Assert.AreEqual(540, buttonWidth);
-                Assert.AreEqual(68, buttonHeight);
-                Assert.AreEqual(690, buttonPositionX);
-                Assert.AreEqual(661, buttonPositionY);
+                Assert.AreEqual(540, buttonWidth, "Element size is wrong");
+                Assert.AreEqual(68, buttonHeight, "Element size is wrong");
+                Assert.AreEqual(690, buttonPositionX, "Element position is wrong");
+                Assert.AreEqual(661, buttonPositionY, "Element position is wrong");
 
 
             });

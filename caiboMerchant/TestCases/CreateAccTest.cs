@@ -325,12 +325,11 @@ namespace caiboMerchant.TestCases
             var signUpPage = new CreateAccPage(_driver, testMail);
             signUpPage.CreateAccount("test", "testCompany", "Sepacyber1!", "Sepacyber1!");
 
-            string mailUserName = testMail.Substring(0, testMail.IndexOf("@"));
-
             _driver.Navigate().GoToUrl("https://putsbox.com/");
 
-            var checkInbox = _driver.FindElement(By.PartialLinkText(mailUserName));
-            checkInbox.Click();
+            putsbox.OpenInbox();
+            putsbox.OpenMail();
+
             bool confirmMail = _driver.FindElement(By.XPath("/html/body/div/div[1]/div/table/tbody/tr[1]/td[2]")).Displayed;
             Assert.IsTrue(confirmMail);
         }
@@ -379,10 +378,116 @@ namespace caiboMerchant.TestCases
         }
 
 
+        [Test]
+        public void VerifySignUpElements()
+        {
+            IWebElement caiboLogo = _driver.FindElement(By.LinkText("Caibo"));
+            var logoWidth = caiboLogo.Size.Width;
+            var logoHeight = caiboLogo.Size.Height;
+            var logoPositionX = caiboLogo.Location.X;//96
+            var logoPositionY = caiboLogo.Location.Y;//35
+
+            IWebElement header = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/header/h3"));
+            var headerWidth = header.Size.Width;
+            var headerHeight = header.Size.Height;
+            var headerPositionX = header.Location.X;
+            var headerPositionY = header.Location.Y;
+
+            IWebElement emailField = _driver.FindElement(By.Id("email"));
+            var emailWidth = emailField.Size.Width;
+            var emailHeight = emailField.Size.Height;
+            var emailPositionX = emailField.Location.X;
+            var emailPositionY = emailField.Location.Y;
+
+            IWebElement nameField = _driver.FindElement(By.Id("name"));
+            var nameWidth = nameField.Size.Width;
+            var nameHeight = nameField.Size.Height;
+            var namePositionX = nameField.Location.X;
+            var namePositionY = nameField.Location.Y;
+
+            IWebElement companyField = _driver.FindElement(By.Id("company"));
+            var companyWidth = companyField.Size.Width;
+            var companyHeight = companyField.Size.Height;
+            var companyPositionX = companyField.Location.X;
+            var companyPositionY = companyField.Location.Y;
+
+            IWebElement passField = _driver.FindElement(By.Id("password"));
+            var passWidth = passField.Size.Width;
+            var passHeight = passField.Size.Height;
+            var passPositionX = passField.Location.X;
+            var passPositionY = passField.Location.Y;
+
+            IWebElement passConfirmField = _driver.FindElement(By.Id("password_confirm"));
+            var passConfirmWidth = passConfirmField.Size.Width;
+            var passConfirmHeight = passConfirmField.Size.Height;
+            var passConfirmPositionX = passConfirmField.Location.X;
+            var passConfirmPositionY = passConfirmField.Location.Y;
+
+            IWebElement continueButton = _driver.FindElement(By.CssSelector("button[type = 'submit']"));
+            var buttonWidth = continueButton.Size.Width;
+            var buttonHeight = continueButton.Size.Height;
+            var buttonPositionX = continueButton.Location.X;
+            var buttonPositionY = continueButton.Location.Y;
+
+
+            Assert.Multiple(() =>
+            {
+                Assert.IsTrue(caiboLogo.Displayed);
+                Assert.AreEqual(238, logoWidth, "Element size is wrong");
+                Assert.AreEqual(58, logoHeight, "Element size is wrong");
+                Assert.AreEqual(95, logoPositionX, "Element position is wrong");
+                Assert.AreEqual(35, logoPositionY, "Element position is wrong");
+
+                Assert.IsTrue(header.Displayed);
+                Assert.AreEqual("Create an account", header.Text);
+                Assert.AreEqual(540, headerWidth, "Element size is wrong");
+                Assert.AreEqual(52, headerHeight, "Element size is wrong");
+                Assert.AreEqual(682, headerPositionX, "Element position is wrong");
+                Assert.AreEqual(195, headerPositionY, "Element position is wrong");
+
+                Assert.IsTrue(emailField.Enabled);
+                Assert.AreEqual(530, emailWidth, "Element size is wrong");
+                Assert.AreEqual(48, emailHeight, "Element size is wrong");
+                Assert.AreEqual(686, emailPositionX, "Element position is wrong");
+                Assert.AreEqual(328, emailPositionY, "Element position is wrong");
+
+                Assert.IsTrue(nameField.Enabled);
+                Assert.AreEqual(530, nameWidth, "Element size is wrong");
+                Assert.AreEqual(48, nameHeight, "Element size is wrong");
+                Assert.AreEqual(686, namePositionX, "Element position is wrong");
+                Assert.AreEqual(438, namePositionY, "Element position is wrong");
+
+                Assert.IsTrue(companyField.Enabled);
+                Assert.AreEqual(530, companyWidth, "Element size is wrong");
+                Assert.AreEqual(48, companyHeight, "Element size is wrong");
+                Assert.AreEqual(686, companyPositionX, "Element position is wrong");
+                Assert.AreEqual(548, companyPositionY, "Element position is wrong");
+              
+                Assert.IsTrue(passField.Enabled);
+                Assert.AreEqual(530, passWidth, "Element size is wrong");
+                Assert.AreEqual(48, passHeight, "Element size is wrong");
+                Assert.AreEqual(686, passPositionX, "Element position is wrong");
+                Assert.AreEqual(658, passPositionY, "Element position is wrong");
+
+                Assert.IsTrue(passConfirmField.Enabled);
+                Assert.AreEqual(530, passConfirmWidth, "Element size is wrong");
+                Assert.AreEqual(48, passConfirmHeight, "Element size is wrong");
+                Assert.AreEqual(686, passConfirmPositionX, "Element position is wrong");
+                Assert.AreEqual(768, passConfirmPositionY, "Element position is wrong");
+
+                Assert.IsTrue(continueButton.Enabled);
+                Assert.AreEqual(540, buttonWidth, "Element size is wrong");
+                Assert.AreEqual(68, buttonHeight, "Element size is wrong");
+                Assert.AreEqual(682, buttonPositionX, "Element position is wrong");
+                Assert.AreEqual(861, buttonPositionY, "Element position is wrong");
+
+
+            });
+        }
         [TearDown]
         public void EndTest()
         {
-            //driver.Quit();
+            _driver.Quit();
         }
 
     }
