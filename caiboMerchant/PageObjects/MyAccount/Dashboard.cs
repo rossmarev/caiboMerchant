@@ -7,7 +7,7 @@ using SeleniumExtras.PageObjects;
 namespace caiboMerchant.PageObjects.MyAccount
 
 {
-    class Dashboard
+   public class Dashboard
     {
         public Dashboard(IWebDriver driver)
         {

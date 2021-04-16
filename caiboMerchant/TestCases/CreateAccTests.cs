@@ -15,7 +15,7 @@ using System.Threading;
 
 namespace caiboMerchant.TestCases
 {
-   public class CreateAccTest
+   public class CreateAccTests
     {
         IWebDriver _driver;
         WebDriverWait _wait;
@@ -99,7 +99,7 @@ namespace caiboMerchant.TestCases
             var pass = _driver.FindElement(By.Id("password"));
             pass.SendKeys("Sepacyber1!");
             var loginButton = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/footer/button"));
-            loginButton.Click();
+            loginButton.Click(); 
             IWebElement startNow = _wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//*[@id='main']/div/div/button")));
             startNow.Click();
 

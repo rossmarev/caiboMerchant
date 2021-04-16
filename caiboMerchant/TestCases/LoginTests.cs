@@ -105,7 +105,7 @@ namespace caiboMerchant.TestCases
 
 
             string errorMessage = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/div[2]/p")).Text;
-            Assert.AreEqual("Passwords do not match!o", errorMessage);
+            Assert.AreEqual("Passwords do not match!", errorMessage);
 
            
 
