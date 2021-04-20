@@ -65,6 +65,23 @@ namespace caiboMerchant.PageObjects.CreateActivate
 
         }
 
+        public void Profile()
+        {
+            ProfileButton.Click();
+        }
 
+        public void TestApi()
+        {
+            TestAPI.Click();
+        }
+        public void LiveApi()
+        {
+            LiveAPI.Click();
+        }
+
+        public void ActivateAccount()
+        {
+            StartNowButton.Click();
+        }
     }
 }

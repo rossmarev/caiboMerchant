@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Validation;
 
 namespace caiboMerchant.TestCases
 {
@@ -51,12 +52,94 @@ namespace caiboMerchant.TestCases
             //test with already opened account
             var loginPage = new LoginPage(_driver);
             loginPage.EnterCredentials("casper_jakubowski@putsbox.com", "Sepacyber1!");
+            var activatePage = new ActivatePage(_driver);
+            activatePage.FAQ();
+            var faqTab = _driver.WindowHandles.Last();
+            _driver.SwitchTo().Window(faqTab);
+            Assert.AreEqual("https://caibo.digital/faqs/", _driver.Url);
+        }
 
-            //to be continued...
+        [Test]
+        public void Profile()
+        {
+            var loginPage = new LoginPage(_driver);
+            loginPage.EnterCredentials("casper_jakubowski@putsbox.com", "Sepacyber1!");
+            var activatePage = new ActivatePage(_driver);
+            activatePage.Profile();
+            Assert.IsTrue(_wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("/html/body/div/div/header/div[3]/ul/li[2]/nav"))).Displayed);
+            
+        }
+
+        [Test]
+        public void LogOut()
+        {
+            var loginPage = new LoginPage(_driver);
+            var activatePage = new ActivatePage(_driver);
+            loginPage.EnterCredentials("casper_jakubowski@putsbox.com", "Sepacyber1!");
+            activatePage.SignOut();
+
+            bool header = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/header/h3")).Displayed;
+            Assert.IsTrue(header);
         }
 
 
-        [TearDown]
+        [Test]
+        public void VerifyTestAPI()
+        {
+            var loginPage = new LoginPage(_driver);
+            var activatePage = new ActivatePage(_driver);
+            loginPage.EnterCredentials("casper_jakubowski@putsbox.com", "Sepacyber1!");
+            activatePage.TestApi();
+            
+            Assert.Multiple(() =>
+            {
+                Assert.IsTrue(_driver.FindElement(By.CssSelector("label[for = 'memberId']")).Displayed);
+                Assert.IsTrue(_driver.FindElement(By.CssSelector("label[for = 'secret']")).Displayed);
+                Assert.IsTrue(_driver.FindElement(By.CssSelector("label[for = 'url']")).Displayed);
+                Assert.IsTrue(_driver.FindElement(By.CssSelector("label[for = 'documentation']")).Displayed);
+            });
+
+            var apiDocs = _driver.FindElement(By.LinkText("https://api-doc.sepa-cyber.com/"));
+            apiDocs.Click();
+           // var apiTab = _driver.WindowHandles.Last();
+           // _driver.SwitchTo().Window(apiTab);
+            Assert.AreEqual("https://api-doc.sepa-cyber.com/", _driver.Url);
+        }
+
+        [Test]
+        public void VerifyLiverAPI()
+        {
+            var loginPage = new LoginPage(_driver);
+            var activatePage = new ActivatePage(_driver);
+            loginPage.EnterCredentials("casper_jakubowski@putsbox.com", "Sepacyber1!");
+            activatePage.LiveApi();
+
+            Assert.IsTrue(_driver.FindElement(By.XPath("//*[@id='main']/div/div/p")).Displayed);
+            activatePage.ActivateAccount();
+            Assert.AreEqual("https://caibo-merchant-staging.sepa-cyber.com/en/registration/step1", _driver.Url);
+        }
+
+        [Test]
+        public void StartNowButton()
+        {
+            var loginPage = new LoginPage(_driver);
+            var activatePage = new ActivatePage(_driver);
+            loginPage.EnterCredentials("casper_jakubowski@putsbox.com", "Sepacyber1!");
+            activatePage.ActivateAccount();
+            Assert.Multiple(() =>
+             {
+                 Assert.AreEqual("https://caibo-merchant-staging.sepa-cyber.com/en/registration/step1/", _driver.Url);
+                 Assert.IsTrue(_driver.FindElement(By.LinkText("Business details")).Enabled);
+                 Assert.IsTrue(_driver.FindElement(By.LinkText("Business representative")).Enabled);
+                 Assert.IsTrue(_driver.FindElement(By.LinkText("Bank details")).Enabled);
+                 Assert.IsTrue(_driver.FindElement(By.LinkText("Processing information")).Enabled);
+                 Assert.IsTrue(_driver.FindElement(By.LinkText("Risk management questionnaire")).Enabled);
+                 Assert.IsTrue(_driver.FindElement(By.LinkText("Supporting documents")).Enabled);
+             });
+        }
+
+
+            [TearDown]
         public void EndTest()
         {
             //_driver.Quit();
