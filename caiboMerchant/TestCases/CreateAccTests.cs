@@ -64,23 +64,28 @@ namespace caiboMerchant.TestCases
             IWebElement startNow = _wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//*[@id='main']/div/div/button")));
             startNow.Click();
 
+            //business details
             var businessDetails = new BusinessDetails(_driver);
-            businessDetails.EnterBizDetails();
+            businessDetails.EnterCOMPLETEBizDetails();
 
 
+            //representatives
             var businessRep = new BusinessRep(_driver);
             businessRep.EnterBizRep();
 
-
+            //bank details
             var bankDet = new BankDetails(_driver);
             bankDet.EnterBankDet();
 
+            //processing info
             var processInfo = new ProcessingInfo(_driver);
             processInfo.EnterProcessingInfo();
 
+            //risk management
             var riskManage = new RiskManagement(_driver);
             riskManage.EnterRiskManagement();
 
+            //supporting docs
             var supportDocs = new SupportingDocs(_driver);
             supportDocs.AttachDocs();
 
@@ -104,7 +109,7 @@ namespace caiboMerchant.TestCases
             startNow.Click();
 
             var businessDetails = new BusinessDetails(_driver);
-            businessDetails.EnterBizDetails();
+            businessDetails.EnterCOMPLETEBizDetails();
 
 
             var businessRep = new BusinessRep(_driver);
@@ -274,7 +279,7 @@ namespace caiboMerchant.TestCases
                 Assert.IsTrue(emailError,"mail");
                 Assert.IsTrue(nameError,"name");
                 Assert.IsTrue(companyError,"comp");
-                Assert.IsTrue(passError,"pas");
+                Assert.IsTrue(passError,"pass");
             });
 
         }

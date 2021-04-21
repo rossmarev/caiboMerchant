@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using Validation;
 
 namespace caiboMerchant.TestCases
@@ -138,8 +139,117 @@ namespace caiboMerchant.TestCases
              });
         }
 
+        
 
-            [TearDown]
+        [Test]
+        public void BusinessDetCompName()
+        {
+            var loginPage = new LoginPage(_driver);
+            var activatePage = new ActivatePage(_driver);
+            loginPage.EnterCredentials("casper_jakubowski@putsbox.com", "Sepacyber1!");
+            activatePage.ActivateAccount();
+            Assert.AreEqual("testCompany",_driver.FindElement(By.Name("company_name")).GetAttribute("value"));
+        }
+
+        [Test]
+        public void VerifyErrorBizWebsite()
+        {
+            var loginPage = new LoginPage(_driver);
+            var activatePage = new ActivatePage(_driver);
+            var businessPage = new BusinessDetails(_driver);
+            loginPage.EnterCredentials("casper_jakubowski@putsbox.com", "Sepacyber1!");
+            activatePage.ActivateAccount();
+            businessPage.EnterBizDetails("test", "", "test");
+            businessPage.EnterRegDate("01011999");
+            Assert.Multiple(() =>
+           {
+               Assert.IsTrue(_driver.FindElement(By.CssSelector("small[id='website-error']")).Displayed, "siteError");
+               Assert.AreEqual("Please enter a valid website URL.",_driver.FindElement(By.CssSelector("small[id='website-error']")).Text);
+               Assert.IsTrue(_driver.FindElement(By.CssSelector("small[id='registration_number-error']")).Displayed, "regError");
+               Assert.AreEqual("Please enter only digits.", _driver.FindElement(By.CssSelector("small[id='registration_number-error']")).Text);
+
+           });
+        }
+
+        [Test]
+        public void VerifyErrorEarlierRegDate()
+        {
+            var loginPage = new LoginPage(_driver);
+            var activatePage = new ActivatePage(_driver);
+            var businessPage = new BusinessDetails(_driver);
+            loginPage.EnterCredentials("casper_jakubowski@putsbox.com", "Sepacyber1!");
+            activatePage.ActivateAccount();
+            businessPage.EnterRegDate("11111111");
+            businessPage.EnterBankruptcyDetails("na");          
+            var errorEarlierDate = "Please enter a value greater than or equal to 1900-01-01.";
+            Assert.AreEqual(errorEarlierDate, _driver.FindElement(By.CssSelector("small[id='registration_date-error']")).Text);
+        }
+
+
+        [Test]
+        public void VerifyErrorGreaterRegDate()
+        {
+            var loginPage = new LoginPage(_driver);
+            var activatePage = new ActivatePage(_driver);
+            var businessPage = new BusinessDetails(_driver);
+            loginPage.EnterCredentials("casper_jakubowski@putsbox.com", "Sepacyber1!");
+            activatePage.ActivateAccount();
+            businessPage.EnterRegDate("55555555");
+            businessPage.EnterBankruptcyDetails("na");
+            var todayDate = DateTime.Now.ToString("yyyy-MM-dd");
+            var errorGreaterDate = "Please enter a value less than or equal to " + todayDate + ".";
+            Assert.AreEqual(errorGreaterDate, _driver.FindElement(By.CssSelector("small[id='registration_date-error']")).Text);
+        }
+
+        [Test]
+        public void BusinessDetBankruptcy()
+        {
+            var loginPage = new LoginPage(_driver);
+            var activatePage = new ActivatePage(_driver);
+            var businessPage = new BusinessDetails(_driver);
+            loginPage.EnterCredentials("casper_jakubowski@putsbox.com", "Sepacyber1!");
+            activatePage.ActivateAccount();
+            IList<IWebElement> checkbox =_driver.FindElements(By.CssSelector("input[name='bankruptcy']"));
+            Assert.IsTrue(checkbox[1].Selected);
+            businessPage.EnterBankruptcyDetails("test");
+            Assert.IsFalse(checkbox[1].Selected);
+            Assert.IsTrue(_driver.FindElement(By.Name("bankruptcy_details")).Displayed);
+        }
+
+        [Test]
+        public void BusinessDetViolation()
+        {
+            var loginPage = new LoginPage(_driver);
+            var activatePage = new ActivatePage(_driver);
+            var businessPage = new BusinessDetails(_driver);
+            loginPage.EnterCredentials("casper_jakubowski@putsbox.com", "Sepacyber1!");
+            activatePage.ActivateAccount();
+            IList<IWebElement> checkbox = _driver.FindElements(By.CssSelector("input[name='scheme_violation']"));
+            Assert.IsTrue(checkbox[1].Selected);
+            businessPage.EnterViolationDetails("test");
+            Assert.IsFalse(checkbox[1].Selected);
+            Assert.IsTrue(_driver.FindElement(By.Name("scheme_violation_details")).Displayed);
+        }
+
+        [Test]
+        public void SaveMissingData()
+        {
+            var loginPage = new LoginPage(_driver);
+            var activatePage = new ActivatePage(_driver);
+            var businessPage = new BusinessDetails(_driver);
+            loginPage.EnterCredentials("casper_jakubowski@putsbox.com", "Sepacyber1!");
+            activatePage.ActivateAccount();
+            businessPage.EnterBizAddress("", "", "","","");
+            businessPage.EnterBizDetails("", "", "");
+            businessPage.EnterRegDate("");
+            businessPage.EnterBankruptcyDetails("");
+            businessPage.EnterViolationDetails("");
+            businessPage.EnterBizDescription("","","");
+            businessPage.Save();
+            //to fix drop down choices
+        }
+
+        [TearDown]
         public void EndTest()
         {
             //_driver.Quit();

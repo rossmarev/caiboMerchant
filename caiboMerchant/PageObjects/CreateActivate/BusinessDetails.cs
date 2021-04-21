@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 
 
+
 namespace caiboMerchant.PageObjects.CreateActivate
 {
    public class BusinessDetails
@@ -20,7 +21,7 @@ namespace caiboMerchant.PageObjects.CreateActivate
         [FindsBy(How = How.XPath, Using = ("//*[@id='ui-id-1-button']/span[2]"))]
         [CacheLookup]
         IWebElement CountryDropdown;
-        [FindsBy(How = How.XPath, Using = ("//*[@id='ui-id-36']"))]
+        [FindsBy(How = How.XPath, Using = ("/html/body/div/div/main/div[2]/ul/li[33]/div"))]
         [CacheLookup]
         IWebElement Country;
         [FindsBy(How = How.Name, Using = ("state"))]
@@ -35,13 +36,19 @@ namespace caiboMerchant.PageObjects.CreateActivate
         [FindsBy(How = How.Name, Using = ("address_1"))]
         [CacheLookup]
         IWebElement Address1;
+        [FindsBy(How = How.Name, Using = ("address_2"))]
+        [CacheLookup]
+        IWebElement Address2;
+        [FindsBy(How = How.Name, Using = ("company_name"))]
+        [CacheLookup]
+        IWebElement CompanyName;
         [FindsBy(How = How.Name, Using = ("website"))]
         [CacheLookup]
         IWebElement BusinessWebsite;
         [FindsBy(How = How.XPath, Using = ("//*[@id='ui-id-2-button']/span[2]"))]
         [CacheLookup]
         IWebElement BusinessDropdown;
-        [FindsBy(How = How.XPath, Using = ("//*[@id='ui-id-246']"))]
+        [FindsBy(How = How.XPath, Using = ("/html/body/div/div/main/div[3]/ul/li[3]/div"))] ///html/body/div/div/main/div[3]/ul/li[3]/div
         [CacheLookup]
         IWebElement BusinessType;
         [FindsBy(How = How.Name, Using = ("licenses_held"))]
@@ -71,7 +78,7 @@ namespace caiboMerchant.PageObjects.CreateActivate
         [CacheLookup]
         IWebElement BusinessDescriptionDropdown;
 
-        [FindsBy(How = How.XPath, Using = ("//*[@id='ui-id-258']"))]
+        [FindsBy(How = How.XPath, Using = ("/html/body/div/div/main/div[4]/ul/li[20]/div"))]
         [CacheLookup]
         IWebElement BusinessDescription;
         [FindsBy(How = How.Name, Using = ("business_description"))]
@@ -86,14 +93,68 @@ namespace caiboMerchant.PageObjects.CreateActivate
         [FindsBy(How = How.XPath, Using = ("//*[@id='duration-button']/span[2]"))]
         [CacheLookup]
         IWebElement DeliveryDropdown;
-        [FindsBy(How = How.XPath, Using = ("//*[@id='ui-id-1459']"))]
+        [FindsBy(How = How.XPath, Using = ("/html/body/div/div/main/div[5]/ul/li[2]/div"))]
         [CacheLookup]
         IWebElement DeliveryTime;
         [FindsBy(How = How.XPath, Using = ("//*[@id='main']/div[1]/form/footer/button"))]
         [CacheLookup]
         IWebElement SaveButton;
 
-        public void EnterBizDetails()
+        public void EnterBizAddress(string state, string city, string zip, string addess1, string address2)
+        {
+
+            CountryDropdown.Click();
+            Country.Click();
+            State.SendKeys(state);
+            City.SendKeys(city);
+            Zip.SendKeys(zip);
+            Address1.SendKeys(addess1);
+            Address2.SendKeys(address2);
+            
+        }
+        public void EnterBizDetails(string website, string license, string regnumber)
+        {
+            BusinessWebsite.SendKeys(website);
+            BusinessDropdown.Click();
+            BusinessType.Click();
+            License.SendKeys(license);
+            RegNumber.SendKeys(regnumber);
+        }
+
+        public void EnterRegDate(string date)
+        {
+            RegDate.SendKeys(date); 
+        }
+
+        public void EnterBankruptcyDetails(string details)
+        {
+            Bankruptcy.Click();
+            BankruptcyDetails.SendKeys(details);
+
+        }
+
+        public void EnterViolationDetails(string details)
+        {
+            Violation.Click();
+            ViolationDetails.SendKeys(details);
+
+        }
+
+        public void EnterBizDescription(string info, string terms, string returns)
+        {
+            BusinessDescriptionDropdown.Click();
+            BusinessDescription.Click();
+            BusinessInfo.SendKeys(info);
+            BillingTerms.SendKeys(terms);
+            Return.SendKeys(returns);
+            DeliveryDropdown.Click();
+            DeliveryTime.Click();
+        }
+        public void Save()
+        { 
+            SaveButton.Click();
+        }
+        public void EnterCOMPLETEBizDetails()
         {
 
             CountryDropdown.Click();
@@ -120,14 +181,6 @@ namespace caiboMerchant.PageObjects.CreateActivate
             DeliveryDropdown.Click();
             DeliveryTime.Click();
             SaveButton.Click();
-
-
-
-
-
-
-
-
         }
     }
 }

@@ -56,7 +56,7 @@ namespace caiboMerchant.PageObjects.CreateActivate
             Password.SendKeys(pass);
             ConfirmPassword.SendKeys(confrimPass);
             CreateAccButton.Click();
-
+            
         }
 
         public void Login()
