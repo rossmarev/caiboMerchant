@@ -21,7 +21,7 @@ namespace caiboMerchant.PageObjects.CreateActivate
         [FindsBy(How = How.XPath, Using = ("//*[@id='ui-id-1-button']/span[2]"))]
         [CacheLookup]
         IWebElement CountryDropdown;
-        [FindsBy(How = How.XPath, Using = ("/html/body/div/div/main/div[2]/ul/li[33]/div"))]
+        [FindsBy(How = How.XPath, Using = ("//*[@id='ui-id-1-menu']/li[225]"))]
         [CacheLookup]
         IWebElement Country;
         [FindsBy(How = How.Name, Using = ("state"))]
@@ -48,7 +48,7 @@ namespace caiboMerchant.PageObjects.CreateActivate
         [FindsBy(How = How.XPath, Using = ("//*[@id='ui-id-2-button']/span[2]"))]
         [CacheLookup]
         IWebElement BusinessDropdown;
-        [FindsBy(How = How.XPath, Using = ("/html/body/div/div/main/div[3]/ul/li[3]/div"))] ///html/body/div/div/main/div[3]/ul/li[3]/div
+        [FindsBy(How = How.XPath, Using = ("//*[@id='ui-id-2-menu']/li[4]"))] 
         [CacheLookup]
         IWebElement BusinessType;
         [FindsBy(How = How.Name, Using = ("licenses_held"))]
@@ -62,7 +62,10 @@ namespace caiboMerchant.PageObjects.CreateActivate
         IWebElement RegDate;
         [FindsBy(How = How.XPath, Using = ("//*[@id='main']/div[1]/form/div/section[3]/div[1]/div/div[1]/label/div"))]
         [CacheLookup]
-        IWebElement Bankruptcy;
+        IWebElement BankruptcyYes;
+        [FindsBy(How = How.XPath, Using = ("//*[@id='main']/div[1]/form/div/section[3]/div[1]/div/div[2]/label/div"))]
+        [CacheLookup]
+        IWebElement BankruptcyNo;
 
         [FindsBy(How = How.Id, Using = ("bankruptcy_info"))]
         [CacheLookup]
@@ -70,7 +73,10 @@ namespace caiboMerchant.PageObjects.CreateActivate
 
         [FindsBy(How = How.XPath, Using = ("//*[@id='main']/div[1]/form/div/section[4]/div[1]/div/div[1]/label/div"))]
         [CacheLookup]
-        IWebElement Violation;
+        IWebElement ViolationYes;
+        [FindsBy(How = How.XPath, Using = ("//*[@id='main']/div[1]/form/div/section[4]/div[1]/div/div[2]/label/div"))]
+        [CacheLookup]
+        IWebElement ViolationNo;
         [FindsBy(How = How.Name, Using = ("scheme_violation_details"))]
         [CacheLookup]
         IWebElement ViolationDetails;
@@ -78,7 +84,7 @@ namespace caiboMerchant.PageObjects.CreateActivate
         [CacheLookup]
         IWebElement BusinessDescriptionDropdown;
 
-        [FindsBy(How = How.XPath, Using = ("/html/body/div/div/main/div[4]/ul/li[20]/div"))]
+        [FindsBy(How = How.XPath, Using = ("//*[@id='ui-id-3-menu']/li[5]"))]
         [CacheLookup]
         IWebElement BusinessDescription;
         [FindsBy(How = How.Name, Using = ("business_description"))]
@@ -93,7 +99,7 @@ namespace caiboMerchant.PageObjects.CreateActivate
         [FindsBy(How = How.XPath, Using = ("//*[@id='duration-button']/span[2]"))]
         [CacheLookup]
         IWebElement DeliveryDropdown;
-        [FindsBy(How = How.XPath, Using = ("/html/body/div/div/main/div[5]/ul/li[2]/div"))]
+        [FindsBy(How = How.XPath, Using = ("//*[@id='duration-menu']/li[3]"))] 
         [CacheLookup]
         IWebElement DeliveryTime;
         [FindsBy(How = How.XPath, Using = ("//*[@id='main']/div[1]/form/footer/button"))]
@@ -128,14 +134,14 @@ namespace caiboMerchant.PageObjects.CreateActivate
 
         public void EnterBankruptcyDetails(string details)
         {
-            Bankruptcy.Click();
+            BankruptcyYes.Click();
             BankruptcyDetails.SendKeys(details);
 
         }
 
         public void EnterViolationDetails(string details)
         {
-            Violation.Click();
+            ViolationYes.Click();
             ViolationDetails.SendKeys(details);
 
         }
@@ -169,9 +175,9 @@ namespace caiboMerchant.PageObjects.CreateActivate
             License.SendKeys("12345678");
             RegNumber.SendKeys("12345566");
             RegDate.SendKeys("12121999");
-            Bankruptcy.Click();
+            BankruptcyYes.Click();
             BankruptcyDetails.SendKeys("NA");
-            Violation.Click();
+            ViolationYes.Click();
             ViolationDetails.SendKeys("NA");
             BusinessDescriptionDropdown.Click();
             BusinessDescription.Click();
@@ -181,6 +187,78 @@ namespace caiboMerchant.PageObjects.CreateActivate
             DeliveryDropdown.Click();
             DeliveryTime.Click();
             SaveButton.Click();
+        }
+        public void EnterClearedBizDetails()
+        {
+
+            CountryDropdown.Click();
+            Country.Click();
+            State.Clear();
+            State.SendKeys("Varna");
+            City.Clear();
+            City.SendKeys("Varna");
+            Zip.Clear();
+            Zip.SendKeys("9000");
+            Address1.Clear();
+            Address1.SendKeys("45 st");
+            BusinessWebsite.Clear();
+            BusinessWebsite.SendKeys("test.com");
+            BusinessDropdown.Click();
+            BusinessType.Click();
+            License.Clear();
+            License.SendKeys("12345678");
+            RegNumber.Clear();
+            RegNumber.SendKeys("12345566");
+            RegDate.Clear();
+            RegDate.SendKeys("12121999");
+            BankruptcyNo.Click();
+            BankruptcyYes.Click();
+            BankruptcyDetails.Clear();
+            BankruptcyDetails.SendKeys("NA");
+
+            ViolationNo.Click();
+            ViolationYes.Click();
+            ViolationDetails.Clear();
+            ViolationDetails.SendKeys("NA");
+            BusinessDescriptionDropdown.Click();
+            BusinessDescription.Click();
+            BusinessInfo.Clear();
+            BusinessInfo.SendKeys("NA");
+            BillingTerms.Clear();
+            BillingTerms.SendKeys("NA");
+            Return.Clear();
+            Return.SendKeys("NA");
+            DeliveryDropdown.Click();
+            DeliveryTime.Click();
+            SaveButton.Click();
+
+        }
+        public void ClearBizDetails()
+        {
+
+            CountryDropdown.Click();
+            Country.Click();
+            State.Clear();
+            City.Clear();
+            Zip.Clear();
+            Address1.Clear();
+            BusinessWebsite.Clear();
+            BusinessDropdown.Click();
+            BusinessType.Click();
+            License.Clear();
+            RegNumber.Clear();
+            RegDate.Clear();
+            BankruptcyNo.Click();
+
+            ViolationNo.Click();
+            BusinessDescriptionDropdown.Click();
+            BusinessDescription.Click();
+            BusinessInfo.Clear();
+            BillingTerms.Clear();
+            Return.Clear();
+            DeliveryDropdown.Click();
+            DeliveryTime.Click();
+
         }
     }
 }

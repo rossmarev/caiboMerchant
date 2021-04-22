@@ -140,7 +140,7 @@ namespace caiboMerchant.TestCases
         }
 
         
-
+        //business details
         [Test]
         public void BusinessDetCompName()
         {
@@ -236,20 +236,120 @@ namespace caiboMerchant.TestCases
         {
             var loginPage = new LoginPage(_driver);
             var activatePage = new ActivatePage(_driver);
+            var businessDetPage = new BusinessDetails(_driver);
+            loginPage.EnterCredentials("casper_jakubowski@putsbox.com", "Sepacyber1!");
+            activatePage.ActivateAccount();
+            businessDetPage.ClearBizDetails();
+            businessDetPage.Save();
+            Assert.Multiple(() =>
+            {
+                Assert.IsTrue(_driver.FindElement(By.CssSelector("small[id='state-error']")).Displayed);
+                Assert.IsTrue(_driver.FindElement(By.CssSelector("small[id='city-error']")).Displayed);
+                Assert.IsTrue(_driver.FindElement(By.CssSelector("small[id='zip-error']")).Displayed);
+                Assert.IsTrue(_driver.FindElement(By.CssSelector("small[id='address_1-error']")).Displayed);
+                Assert.IsTrue(_driver.FindElement(By.CssSelector("small[id='website-error']")).Displayed);
+                Assert.IsTrue(_driver.FindElement(By.CssSelector("small[id='registration_number-error']")).Displayed);
+                Assert.IsTrue(_driver.FindElement(By.CssSelector("small[id='registration_date-error']")).Displayed);
+                Assert.IsTrue(_driver.FindElement(By.CssSelector("small[id='business_info-error']")).Displayed);
+                Assert.IsTrue(_driver.FindElement(By.CssSelector("small[id='billing_terms-error']")).Displayed);
+                Assert.IsTrue(_driver.FindElement(By.CssSelector("small[id='refund-error']")).Displayed);
+
+            });
+        }
+
+        [Test]
+        public void SaveValidData()
+        {
+            var loginPage = new LoginPage(_driver);
+            var activatePage = new ActivatePage(_driver);
             var businessPage = new BusinessDetails(_driver);
             loginPage.EnterCredentials("casper_jakubowski@putsbox.com", "Sepacyber1!");
             activatePage.ActivateAccount();
-            businessPage.EnterBizAddress("", "", "","","");
-            businessPage.EnterBizDetails("", "", "");
-            businessPage.EnterRegDate("");
-            businessPage.EnterBankruptcyDetails("");
-            businessPage.EnterViolationDetails("");
-            businessPage.EnterBizDescription("","","");
+            businessPage.EnterBizAddress("test", "test", "2222", "test", "");
+            businessPage.EnterBizDetails("test.com", "", "123123");
+            businessPage.EnterRegDate("11111999");
+            businessPage.EnterBankruptcyDetails("test");
+            businessPage.EnterViolationDetails("test");
+            businessPage.EnterBizDescription("test", "test", "test");
             businessPage.Save();
-            //to fix drop down choices
+            Assert.AreEqual("https://caibo-merchant-staging.sepa-cyber.com/en/registration/step2", _driver.Url);
+            Assert.AreEqual("completed", _driver.FindElement(By.XPath("//*[@id='sidebar']/div[2]/nav[1]/ul/li[1]/ol/li[1]")).GetAttribute("class"));
         }
 
-        [TearDown]
+        //business representatives
+        [Test]
+        public void BizRepInvalidEmailAddress()
+        {
+            var loginPage = new LoginPage(_driver);
+            var activatePage = new ActivatePage(_driver);
+            var businessDetPage = new BusinessDetails(_driver);
+            var businessRep = new BusinessRep(_driver);
+            loginPage.EnterCredentials("casper_jakubowski@putsbox.com", "Sepacyber1!");
+            activatePage.ActivateAccount();
+            businessDetPage.EnterClearedBizDetails();
+            businessRep.EnterCeoEmail("test");
+            businessRep.EnterPhone("11");
+            Assert.IsTrue(_driver.FindElement(By.CssSelector("small[id='ceo[email]-error']")).Displayed);
+        }
+
+        [Test]
+        public void BizRepInvalidPhoneN()
+        {
+            var loginPage = new LoginPage(_driver);
+            var activatePage = new ActivatePage(_driver);
+            var businessDetPage = new BusinessDetails(_driver);
+            var businessRep = new BusinessRep(_driver);
+            loginPage.EnterCredentials("casper_jakubowski@putsbox.com", "Sepacyber1!");
+            activatePage.ActivateAccount();
+            businessDetPage.EnterCOMPLETEBizDetails();
+            businessRep.EnterPhone("11111111111111");
+            Assert.IsTrue(_driver.FindElement(By.CssSelector("small[id='ceo[phone]-error']")).Displayed);
+        }
+
+        [Test]
+        public void BizRepSignatoryCheck()
+        {
+            var loginPage = new LoginPage(_driver);
+            var activatePage = new ActivatePage(_driver);
+            var businessDetPage = new BusinessDetails(_driver);
+            loginPage.EnterCredentials("casper_jakubowski@putsbox.com", "Sepacyber1!");
+            activatePage.ActivateAccount();
+            businessDetPage.EnterCOMPLETEBizDetails();
+            Assert.Multiple(() =>
+            {
+                Assert.IsTrue(_driver.FindElement(By.CssSelector("input[id='auhorized']")).Selected);
+                Assert.IsFalse(_driver.FindElement(By.XPath("//*[@id='main']/div[1]/form/div/section[2]/div[2]")).Displayed);
+            });
+        }
+            [Test]
+            public void BizRepShareholderCheck()
+            {
+                var loginPage = new LoginPage(_driver);
+                var activatePage = new ActivatePage(_driver);
+                var businessDetPage = new BusinessDetails(_driver);
+                loginPage.EnterCredentials("casper_jakubowski@putsbox.com", "Sepacyber1!");
+                activatePage.ActivateAccount();
+                businessDetPage.EnterCOMPLETEBizDetails();
+                Assert.Multiple(() =>
+                {
+                    Assert.IsTrue(_driver.FindElement(By.CssSelector("input[id='shareholder']")).Selected);
+                    Assert.IsFalse(_driver.FindElement(By.XPath("//*[@id='main']/div[1]/form/div/section[3]/div[2]")).Displayed);
+                });
+
+            }
+        [Test]
+        public void BizRepCeoFields()
+        {
+            var loginPage = new LoginPage(_driver);
+            var activatePage = new ActivatePage(_driver);
+            var businessDetPage = new BusinessDetails(_driver);
+            var businessRep = new BusinessRep(_driver);
+            loginPage.EnterCredentials("casper_jakubowski@putsbox.com", "Sepacyber1!");
+            activatePage.ActivateAccount();
+            businessDetPage.EnterCOMPLETEBizDetails();
+            
+        }
+            [TearDown]
         public void EndTest()
         {
             //_driver.Quit();
