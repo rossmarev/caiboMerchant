@@ -262,6 +262,21 @@ namespace caiboMerchant.TestCases
             Assert.AreEqual("Verify your email", verifyMailMessage);
 
         }
+        [Test]
+        public void SignUpValidDataPass8char()
+        {
+            _driver.Navigate().GoToUrl("https://putsbox.com/");
+
+            var putsbox = new GenerateTestMail(_driver);
+            var testMail = putsbox.CopyMail();
+
+            _driver.Navigate().GoToUrl("https://caibo-merchant-staging.sepa-cyber.com/en//signup");
+            var signUpPage = new CreateAccPage(_driver, testMail);
+            signUpPage.CreateAccount("test", "testCompany", "SepaCT1!", "SepaCT1!");
+            var verifyMailMessage = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/header/h5")).Text;
+            Assert.AreEqual("Verify your email", verifyMailMessage);
+
+        }
 
         [Test]
         public void SignUpMissingData()
@@ -300,10 +315,51 @@ namespace caiboMerchant.TestCases
         {
             var testMail = "test@gmail.com";
             var signUpPage = new CreateAccPage(_driver, testMail);
+            signUpPage.CreateAccount("test", "testCompany", "sepacyber", "sepacyber");
+            var error = _driver.FindElement(By.CssSelector("small[id = 'password-error']")).Text;
+            Assert.AreEqual("Password must include at least 8 characters, including numbers, uppercase, lowercase and special character.", error);
+        }
+
+        [Test]
+        public void SignUpInvalidPassUpper()
+        {
+            var testMail = "test@gmail.com";
+            var signUpPage = new CreateAccPage(_driver, testMail);
             signUpPage.CreateAccount("test", "testCompany", "Sepacyber", "Sepacyber");
             var error = _driver.FindElement(By.CssSelector("small[id = 'password-error']")).Text;
             Assert.AreEqual("Password must include at least 8 characters, including numbers, uppercase, lowercase and special character.", error);
         }
+
+
+        [Test]
+        public void SignUpInvalidPassNumber()
+        {
+            var testMail = "test@gmail.com";
+            var signUpPage = new CreateAccPage(_driver, testMail);
+            signUpPage.CreateAccount("test", "testCompany", "sepacyber1", "sepacyber1");
+            var error = _driver.FindElement(By.CssSelector("small[id = 'password-error']")).Text;
+            Assert.AreEqual("Password must include at least 8 characters, including numbers, uppercase, lowercase and special character.", error);
+        }
+        [Test]
+        public void SignUpInvalidPassSchar()
+        {
+            var testMail = "test@gmail.com";
+            var signUpPage = new CreateAccPage(_driver, testMail);
+            signUpPage.CreateAccount("test", "testCompany", "sepacyber!", "sepacyber!");
+            var error = _driver.FindElement(By.CssSelector("small[id = 'password-error']")).Text;
+            Assert.AreEqual("Password must include at least 8 characters, including numbers, uppercase, lowercase and special character.", error);
+        }
+        [Test]
+        public void SignUpInvalidPassLess8()
+        {
+            var testMail = "test@gmail.com";
+            var signUpPage = new CreateAccPage(_driver, testMail);
+            signUpPage.CreateAccount("test", "testCompany", "Sepa1!", "Sepa1!");
+            var error = _driver.FindElement(By.CssSelector("small[id = 'password-error']")).Text;
+            Assert.AreEqual("Password must include at least 8 characters, including numbers, uppercase, lowercase and special character.", error);
+        }
+
+       
 
         [Test]
         public void SignUpMismatchingPass()

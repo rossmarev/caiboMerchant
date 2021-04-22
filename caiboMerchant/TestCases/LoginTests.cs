@@ -299,7 +299,7 @@ namespace caiboMerchant.TestCases
         public void WrongPass()
         {
             var loginPage = new LoginPage(_driver);
-            loginPage.EnterCredentials("israel_mayert@putsbox.com", "wrong pass");
+            loginPage.EnterCredentials("israel_mayert@putsbox.com", "Sepacyber");
             string actualError = _driver.FindElement(By.XPath("/html/body/div/div/main/div/form/div[2]")).Text;
             Assert.AreEqual("Incorrect email or password!", actualError);
         }
