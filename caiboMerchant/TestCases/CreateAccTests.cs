@@ -199,7 +199,7 @@ namespace caiboMerchant.TestCases
 
                 signUpPage.PasswordField("assword");
                 passIndicator = _driver.FindElement(By.Id("pwindicator")).Text;
-                passError = _driver.FindElement(By.Id("password-error")).Text;
+               passError = _driver.FindElement(By.Id("password-error")).Text;
                 Assert.AreEqual("weak", passIndicator);
                 Assert.AreEqual("Password must include at least 8 characters, including numbers, uppercase, lowercase and special character.", passError);
 
@@ -548,7 +548,9 @@ namespace caiboMerchant.TestCases
         [TearDown]
         public void EndTest()
         {
+            _driver.Close();
             _driver.Quit();
+            
         }
 
     }

@@ -244,6 +244,7 @@ namespace caiboMerchant.TestCases
         [TearDown]
         public void EndTest()
         {
+            _driver.Close();
             _driver.Quit();
         }
     }
@@ -432,6 +433,7 @@ namespace caiboMerchant.TestCases
         [TearDown]
         public void EndTest()
         {
+            _driver.Close();
             _driver.Quit();
         }
     }
