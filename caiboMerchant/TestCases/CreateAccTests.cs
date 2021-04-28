@@ -381,18 +381,14 @@ namespace caiboMerchant.TestCases
 
             var putsbox = new GenerateTestMail(_driver);
             var testMail = putsbox.CopyMail();
-
             _driver.Navigate().GoToUrl("https://caibo-merchant-staging.sepa-cyber.com/en//signup");
             var signUpPage = new CreateAccPage(_driver, testMail);
             signUpPage.CreateAccount("test", "testCompany", "Sepacyber1!", "Sepacyber1!");
-
-            _driver.Navigate().GoToUrl("https://putsbox.com/");
-
+           _driver.Navigate().GoToUrl("https://putsbox.com/");
             putsbox.OpenInbox();
-            putsbox.OpenMail();
-
-            bool confirmMail = _driver.FindElement(By.XPath("/html/body/div/div[1]/div/table/tbody/tr[1]/td[2]")).Displayed;
-            Assert.IsTrue(confirmMail);
+            var confirmMail = _driver.FindElement(By.XPath("/html/body/div/div[1]/div/table/tbody/tr[1]/td[2]"));
+            Assert.IsTrue(confirmMail.Displayed);
+            Assert.AreEqual("Caibo - Verify your account", confirmMail.Text);
         }
 
         [Test]
