@@ -346,13 +346,143 @@ namespace caiboMerchant.TestCases
             loginPage.EnterCredentials("casper_jakubowski@putsbox.com", "Sepacyber1!");
             activatePage.ActivateAccount();
             businessDetPage.EnterCOMPLETEBizDetails();
-            
+            businessRep.DirectorFields("John", "Snow", "11111", "01011944", "45st", "varna", "test@gmail.com", "11111111");
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual("https://caibo-merchant-staging.sepa-cyber.com/en/registration/step3", _driver.Url);
+                Assert.AreEqual("completed", _driver.FindElement(By.XPath("//*[@id='sidebar']/div[2]/nav[1]/ul/li[1]/ol/li[2]")).GetAttribute("class"));
+            });
         }
-            [TearDown]
+
+            //bank details
+
+            [Test]
+        public void BankDetails()
+        {
+            var loginPage = new LoginPage(_driver);
+            var activatePage = new ActivatePage(_driver);
+            var businessDetPage = new BusinessDetails(_driver);
+            var businessRep = new BusinessRep(_driver);
+            var bankDet = new BankDetails(_driver);
+            loginPage.EnterCredentials("casper_jakubowski@putsbox.com", "Sepacyber1!");
+            activatePage.ActivateAccount();
+            businessDetPage.EnterCOMPLETEBizDetails();
+            businessRep.DirectorFields("John", "Snow", "11111", "01011944", "45st", "varna", "test@gmail.com", "11111111");
+            bankDet.EnterBankDet("BG123123123123","ASDF");
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual("https://caibo-merchant-staging.sepa-cyber.com/en/registration/step4", _driver.Url);
+                Assert.AreEqual("completed", _driver.FindElement(By.XPath("//*[@id='sidebar']/div[2]/nav[1]/ul/li[1]/ol/li[3]")).GetAttribute("class"));
+            });
+        }
+        [Test]
+        public void VerifyCheckboxesNotSelected()
+        {
+            var loginPage = new LoginPage(_driver);
+            var activatePage = new ActivatePage(_driver);
+            var businessDetPage = new BusinessDetails(_driver);
+            var businessRep = new BusinessRep(_driver);
+            var bankDet = new BankDetails(_driver);
+            loginPage.EnterCredentials("casper_jakubowski@putsbox.com", "Sepacyber1!");
+            activatePage.ActivateAccount();
+            businessDetPage.EnterCOMPLETEBizDetails();
+            businessRep.DirectorFields("John", "Snow", "11111", "01011944", "45st", "varna", "test@gmail.com", "11111111");
+            Assert.Multiple(() =>
+            {
+                Assert.IsFalse(_driver.FindElement(By.XPath("//*[@id='main']/div[1]/form/div/section/div/div[2]/div/div[1]/div[1]/div[1]/label/div")).Selected);
+                Assert.IsFalse(_driver.FindElement(By.XPath("//*[@id='main']/div[1]/form/div/section/div/div[2]/div/div[1]/div[1]/div[2]/label/div")).Selected);
+                Assert.IsFalse(_driver.FindElement(By.XPath("//*[@id='main']/div[1]/form/div/section/div/div[2]/div/div[2]/div[1]/div[1]/label/div")).Selected);
+                Assert.IsFalse(_driver.FindElement(By.XPath("//*[@id='main']/div[1]/form/div/section/div/div[2]/div/div[2]/div[1]/div[2]/label/div")).Selected);
+            });
+        }
+
+        [Test]
+        public void VerifyIbanAccCheckboxes()
+        {
+            var loginPage = new LoginPage(_driver);
+            var activatePage = new ActivatePage(_driver);
+            var businessDetPage = new BusinessDetails(_driver);
+            var businessRep = new BusinessRep(_driver);
+            var bankDet = new BankDetails(_driver);
+            loginPage.EnterCredentials("casper_jakubowski@putsbox.com", "Sepacyber1!");
+            activatePage.ActivateAccount();
+            businessDetPage.EnterCOMPLETEBizDetails();
+            businessRep.DirectorFields("John", "Snow", "11111", "01011944", "45st", "varna", "test@gmail.com", "111");
+            bankDet.IbanCheck();
+            Assert.IsTrue(_driver.FindElement(By.XPath("//*[@id='main']/div[1]/form/div/section/div/div[2]/div/div[1]/div[1]/div[1]/label/div")).Selected);
+            Assert.IsTrue(_driver.FindElement(By.XPath("//*[@id='main']/div[1]/form/div/section/div/div[2]/div/div[2]/div[1]/div[1]/label/div")).Selected);
+
+        }
+
+        [Test]
+        public void VerifyIbanBicCheckboxes()
+        {
+            var loginPage = new LoginPage(_driver);
+            var activatePage = new ActivatePage(_driver);
+            var businessDetPage = new BusinessDetails(_driver);
+            var businessRep = new BusinessRep(_driver);
+            var bankDet = new BankDetails(_driver);
+            loginPage.EnterCredentials("casper_jakubowski@putsbox.com", "Sepacyber1!");
+            activatePage.ActivateAccount();
+            businessDetPage.EnterCOMPLETEBizDetails();
+            businessRep.DirectorFields("John", "Snow", "11111", "01011944", "45st", "varna", "test@gmail.com", "111");
+            bankDet.IbanCheck();
+            Assert.IsTrue(_driver.FindElement(By.XPath("//*[@id='main']/div[1]/form/div/section/div/div[2]/div/div[1]/div[1]/div[1]/label/div")).Selected);
+            Assert.IsTrue(_driver.FindElement(By.XPath("//*[@id='main']/div[1]/form/div/section/div/div[2]/div/div[2]/div[1]/div[1]/label/div")).Selected);
+
+        }
+
+        [Test]
+        public void VerifyInvalidIbanBic()
+        {
+            var loginPage = new LoginPage(_driver);
+            var activatePage = new ActivatePage(_driver);
+            var businessDetPage = new BusinessDetails(_driver);
+            var businessRep = new BusinessRep(_driver);
+            var bankDet = new BankDetails(_driver);
+            loginPage.EnterCredentials("casper_jakubowski@putsbox.com", "Sepacyber1!");
+            activatePage.ActivateAccount();
+            businessDetPage.EnterCOMPLETEBizDetails();
+            businessRep.DirectorFields("John", "Snow", "11111", "01011944", "45st", "varna", "test@gmail.com", "111");
+            bankDet.IbanCheck();
+            bankDet.EnterIbanAcc("test");
+            bankDet.EnterBicRouting("123123");
+            Assert.Multiple(() =>
+            {
+                Assert.IsTrue(_driver.FindElement(By.CssSelector("small[id='iban_account-error']")).Displayed);
+                Assert.IsTrue(_driver.FindElement(By.CssSelector("small[id='bic_routing-error']")).Displayed);
+
+            });
+        }
+
+        [Test]
+        public void VerifyInvalidAccRouting()
+        {
+            var loginPage = new LoginPage(_driver);
+            var activatePage = new ActivatePage(_driver);
+            var businessDetPage = new BusinessDetails(_driver);
+            var businessRep = new BusinessRep(_driver);
+            var bankDet = new BankDetails(_driver);
+            loginPage.EnterCredentials("casper_jakubowski@putsbox.com", "Sepacyber1!");
+            activatePage.ActivateAccount();
+            businessDetPage.EnterCOMPLETEBizDetails();
+            businessRep.DirectorFields("John", "Snow", "11111", "01011944", "45st", "varna", "test@gmail.com", "111");
+            bankDet.AccNCheck();
+            bankDet.EnterIbanAcc("test");
+            bankDet.EnterBicRouting("test");
+            Assert.Multiple(() =>
+            {
+                Assert.IsTrue(_driver.FindElement(By.CssSelector("small[id='iban_account-error']")).Displayed);
+                Assert.IsTrue(_driver.FindElement(By.CssSelector("small[id='bic_routing-error']")).Displayed);
+
+            });
+        }
+
+        [TearDown]
         public void EndTest()
         {
-            _driver.Close();
-            _driver.Quit();
+           _driver.Close();
+           _driver.Quit();
         }
 
     }

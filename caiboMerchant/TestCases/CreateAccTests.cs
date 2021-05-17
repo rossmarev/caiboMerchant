@@ -75,7 +75,7 @@ namespace caiboMerchant.TestCases
 
             //bank details
             var bankDet = new BankDetails(_driver);
-            bankDet.EnterBankDet();
+            bankDet.EnterBankDet("BG123123123123", "ASDF");
 
             //processing info
             var processInfo = new ProcessingInfo(_driver);
@@ -117,7 +117,7 @@ namespace caiboMerchant.TestCases
 
 
             var bankDet = new BankDetails(_driver);
-            bankDet.EnterBankDet();
+            bankDet.EnterBankDet("BG123123123123", "ASDF");
 
            var processInfo = new ProcessingInfo(_driver);
             processInfo.EnterProcessingInfo();

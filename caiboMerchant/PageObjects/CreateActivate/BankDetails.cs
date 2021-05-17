@@ -25,25 +25,57 @@ namespace caiboMerchant.PageObjects.CreateActivate
         IWebElement Currency;
         [FindsBy(How = How.XPath, Using = ("//*[@id='main']/div[1]/form/div/section/div/div[2]/div/div[1]/div[1]/div[1]/label/div"))]
         [CacheLookup]
-        IWebElement Iban;
+        IWebElement IbanCheckBox;
+        [FindsBy(How = How.XPath, Using = ("//*[@id='main']/div[1]/form/div/section/div/div[2]/div/div[1]/div[1]/div[2]/label/div"))]
+        [CacheLookup]
+        IWebElement AccountCheckBox;
         [FindsBy(How = How.Name, Using = ("iban_account"))]
         [CacheLookup]
-        IWebElement IbanN;
+        IWebElement IbanAccN;
+        [FindsBy(How = How.XPath, Using = ("//*[@id='main']/div[1]/form/div/section/div/div[2]/div/div[2]/div[1]/div[1]/label/div"))]
+        [CacheLookup]
+        IWebElement BicCheckBox;
+        [FindsBy(How = How.XPath, Using = ("//*[@id='main']/div[1]/form/div/section/div/div[2]/div/div[2]/div[1]/div[2]/label/div"))]
+        [CacheLookup]
+        IWebElement RoutingCheckBox;
         [FindsBy(How = How.Name, Using = ("bic_routing"))]
         [CacheLookup]
-        IWebElement Bic;
+        IWebElement BicRoutingN;
         [FindsBy(How = How.XPath, Using = ("//*[@id='main']/div[1]/form/footer/button"))]
         [CacheLookup]
         IWebElement SaveButton;
-        public void EnterBankDet()
+        public void EnterBankDet(string ibanN,string bicN)
         {
             CurrencyDropdown.Click();
             Currency.Click();
-            Iban.Click();
-            IbanN.SendKeys("1234123123");
-            Bic.SendKeys("BIC");
+            IbanCheckBox.Click();
+            IbanAccN.SendKeys(ibanN);
+            BicRoutingN.SendKeys(bicN);
             SaveButton.Click();
 
         }
+        public void IbanCheck()
+        {
+            IbanCheckBox.Click();
+            
+        }
+        public void AccNCheck()
+        {
+            AccountCheckBox.Click();
+
+        }
+        public void EnterIbanAcc(string value)
+        {
+            IbanAccN.SendKeys(value);
+            SaveButton.Click();
+        }
+        public void EnterBicRouting(string value)
+        {
+            BicRoutingN.SendKeys(value);
+            SaveButton.Click();
+
+        }
+
+
     }
 }

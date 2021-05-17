@@ -215,6 +215,7 @@ namespace caiboMerchant.PageObjects.CreateActivate
             CeoCountryCodeDropdown.Click();
             CeoCountryCode.Click();
             CeoMobile.SendKeys(number);
+            SaveButton.Click();
         }
     }
 }
