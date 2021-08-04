@@ -392,7 +392,7 @@ namespace caiboMerchant.TestCases
             var buttonPositionX = continueButton.Location.X;
             var buttonPositionY = continueButton.Location.Y;
 
-
+           
             Assert.Multiple(() =>
             {
                 Assert.IsTrue(caiboLogo.Displayed);
